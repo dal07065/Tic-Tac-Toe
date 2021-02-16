@@ -1,0 +1,56 @@
+@font-face {
+    /* font-family: "CosmosLogic"; a name to be used later*/
+    src: url("resources/Bubblegum.ttf"); /*URL to font*/
+}
+
+.root {
+     -fx-background-image: url("resources/play_background_white.png");
+     -fx-font-family: 'Cosmos Logic Demo Version';
+}
+
+#label_Title {
+    -fx-font-family: 'BubbleGum';
+    -fx-font-size: 28px;
+    -fx-text-fill: #264653;
+    /*
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+    */
+}
+/*
+.button {
+    -fx-text-fill: white;
+    -fx-font-family: "BubbleGum";
+    -fx-font-weight: bold;
+    -fx-background-image: url("resources/O.png");
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(#2A5058, #61a2b1);
+}
+*/
+
+.button{
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+    display: none;
+}
+
+.button:pressed {
+    -fx-background-color: black;
+    -fx-background-radius: 25;
+    -fx-text-fill: white;
+}
+
+.label {
+    -fx-font-family: "Mario Kart DS";
+    -fx-font-size: 15px;
+}
+
+#vbox {
+    -fx-border-width: 4px;
+    -fx-border-color: #000000;
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10;
+}
