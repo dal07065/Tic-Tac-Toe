@@ -4,7 +4,7 @@
 }
 
 .root {
-     -fx-background-image: url("resources/play_background_white.png");
+     -fx-background-image: url("resources/play_background_white_long.png");
      -fx-font-family: 'Cosmos Logic Demo Version';
 }
 

@@ -1,26 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="275.0" prefWidth="432.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane prefHeight="275.0" prefWidth="631.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
-      <Button fx:id="button_topLeft" layoutX="54.0" layoutY="47.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
-      <Button fx:id="button_topMid" layoutX="124.0" layoutY="47.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
-      <Button fx:id="button_topRight" layoutX="194.0" layoutY="47.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
-      <Button fx:id="button_midLeft" layoutX="54.0" layoutY="113.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
-      <Button fx:id="button_midMid" layoutX="124.0" layoutY="113.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
-      <Button fx:id="button_midRight" layoutX="194.0" layoutY="113.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
-      <Button fx:id="button_botLeft" layoutX="54.0" layoutY="183.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
-      <Button fx:id="button_botMid" layoutX="124.0" layoutY="183.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
-      <Button fx:id="button_botRight" layoutX="194.0" layoutY="183.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
-      <VBox fx:id="vbox" alignment="CENTER" layoutX="271.0" layoutY="24.0" prefHeight="228.0" prefWidth="137.0" spacing="10.0">
+      <Button fx:id="button_topLeft" layoutX="223.0" layoutY="45.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
+      <Button fx:id="button_topMid" layoutX="291.0" layoutY="45.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
+      <Button fx:id="button_topRight" layoutX="359.0" layoutY="45.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
+      <Button fx:id="button_midLeft" layoutX="223.0" layoutY="113.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
+      <Button fx:id="button_midMid" layoutX="291.0" layoutY="113.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
+      <Button fx:id="button_midRight" layoutX="359.0" layoutY="113.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
+      <Button fx:id="button_botLeft" layoutX="223.0" layoutY="180.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
+      <Button fx:id="button_botMid" layoutX="291.0" layoutY="180.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
+      <Button fx:id="button_botRight" layoutX="359.0" layoutY="180.0" mnemonicParsing="false" onAction="#buttonClicked" prefHeight="45.0" prefWidth="45.0" />
+      <VBox fx:id="vbox" alignment="CENTER" layoutX="460.0" layoutY="24.0" prefHeight="228.0" prefWidth="137.0" spacing="10.0">
          <children>
             <Label fx:id="label_playerHeader" text="player:" />
             <Label fx:id="label_player" text="o" />
             <Label fx:id="label_winner" text="Winner!" visible="false" />
             <Button fx:id="button_reset" mnemonicParsing="false" onAction="#resetClicked" text="reset" visible="false" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+      <VBox fx:id="vbox1" alignment="CENTER" layoutX="50.0" layoutY="24.0" prefHeight="228.0" prefWidth="137.0" spacing="10.0">
+         <children>
+            <HBox alignment="TOP_CENTER" prefWidth="200.0" spacing="50.0">
+               <children>
+                  <Label fx:id="label_playerHeader1" text="o" />
+                  <Label text="x" />
+               </children>
+            </HBox>
+            <HBox alignment="TOP_CENTER" prefWidth="200.0" spacing="20.0">
+               <children>
+                  <Label text="ScoreO" />
+                  <Label text="ScoreX" />
+               </children>
+            </HBox>
+            <Label fx:id="label_winner1" text="Winner!" visible="false" />
+            <Button fx:id="button_reset1" mnemonicParsing="false" onAction="#resetClicked" text="reset" visible="false" />
+            <Button mnemonicParsing="false" text="reset score" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
