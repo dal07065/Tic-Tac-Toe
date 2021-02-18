@@ -59,7 +59,7 @@ public class Controller {
     @FXML
     void switchPlayScene(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("play.fxml"));
-        Scene scenePlay = new Scene(root, 631, 275);
+        Scene scenePlay = new Scene(root, 432, 275);
         scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
 
         Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -156,5 +156,9 @@ public class Controller {
         // set all buttons setMouseTransparent(false)
         // set player back to O
 
+    }
+
+
+    public void resetScoreClicked(ActionEvent actionEvent) {
     }
 }

@@ -4,7 +4,7 @@
 }
 
 .root {
-     -fx-background-image: url("resources/play_background_white_long.png");
+     -fx-background-image: url("resources/play_background_white.png");
      -fx-font-family: 'Cosmos Logic Demo Version';
 }
 
@@ -23,6 +23,8 @@
 
 .button{
     -fx-background-color: none;
+    -fx-font-family: "Mario Kart DS";
+    -fx-font-size: 22px;
 }
 
 .button:pressed {
@@ -46,13 +48,6 @@
 }
 
 #vbox {
-    -fx-border-width: 4px;
-    -fx-border-color: #000000;
-    -fx-background-color: #FFFFFF;
-    -fx-border-radius: 25;
-}
-
-#vbox1 {
     -fx-border-width: 4px;
     -fx-border-color: #000000;
     -fx-background-color: #FFFFFF;
