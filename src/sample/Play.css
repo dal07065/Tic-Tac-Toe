@@ -15,9 +15,10 @@
 }
 
 .button:hover {
-    -fx-border-width: 3px;
+    /*-fx-border-width: 3px;
     -fx-border-style: dotted;
-    -fx-border-radius: 25px;
+    -fx-border-radius: 25px;*/
+    -fx-background-color: radial-gradient( radius 100%, white, green, orange);
 }
 
 
