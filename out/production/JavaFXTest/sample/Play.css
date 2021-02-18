@@ -42,6 +42,19 @@
     -fx-border-radius: 25;
 }
 
+#buttonBack {
+     -fx-background-image: url("resources/backButton.png");
+     -fx-background-size: 40px 40px;
+}
+#buttonBack:hover {
+    -fx-border-color: #FFFFFF;
+}
+#buttonBack:pressed {
+     -fx-background-color: #FFFFFF;
+     -fx-border-color: #FFFFFF;
+     -fx-opacity: 0.5;
+}
+
 .label {
     -fx-font-family: "Mario Kart DS";
     -fx-font-size: 22px;

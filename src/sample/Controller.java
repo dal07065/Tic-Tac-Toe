@@ -161,4 +161,20 @@ public class Controller {
 
     public void resetScoreClicked(ActionEvent actionEvent) {
     }
+
+    public void buttonBackClicked(ActionEvent actionEvent) throws IOException {
+
+        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(Main.class.getResource("Main.css").toExternalForm());
+
+        Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        currentStage.setTitle("Tic Tac Toe");
+        currentStage.setScene(scene);
+        currentStage.sizeToScene();
+        currentStage.setResizable(false);
+        currentStage.show();
+
+    }
 }
