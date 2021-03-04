@@ -77,7 +77,13 @@ public class Controller {
     private ImageView imageView_player2;
 
     @FXML
-    void switchPlayScene(ActionEvent event) throws IOException {
+    void switch1PlayScene(ActionEvent event) throws IOException {
+
+        // switch to 1 player scene
+    }
+
+    @FXML
+    void switch2PlayScene(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("play2.fxml"));
         Scene scenePlay = new Scene(root, 634, 446);
         scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
