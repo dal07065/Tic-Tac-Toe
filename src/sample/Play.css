@@ -1,24 +1,27 @@
 @font-face {
     /* font-family: "CosmosLogic"; a name to be used later*/
-    src: url("resources/Bubblegum.ttf"); /*URL to font*/
+    src: url("resources/Mario-Kart-DS.ttf"); /*URL to font*/
 }
 
 .root {
-     -fx-background-image: url("resources/play_background_white.png");
-     -fx-font-family: 'Cosmos Logic Demo Version';
+     /* -fx-background-image: url("resources/play_background_white_long.png"); */
+     -fx-background-color: #FFFFFF;
+     -fx-font-family: 'Mario Kart DS';
 }
 
-#label_player {
+.label {
     -fx-font-family: "Mario Kart DS";
-    -fx-font-size: 48px;
+    -fx-font-size: 20px;
     -fx-text-fill: #000000;
 }
 
 .button:hover {
-    /*-fx-border-width: 3px;
+
+    -fx-border-width: 3px;
     -fx-border-style: dotted;
-    -fx-border-radius: 25px;*/
-    -fx-background-color: radial-gradient( radius 100%, white, green, orange);
+    -fx-border-radius: 25px;
+
+    //-fx-background-color: radial-gradient( radius 100%, white, green, orange);
 }
 
 
@@ -36,11 +39,19 @@
     -fx-background-radius: 25px;
 }
 
-#button_reset {
+#button_resetBoard {
     -fx-border-width: 3px;
     -fx-border-color: #000000;
     -fx-background-color: #FFFFFF;
     -fx-border-radius: 25;
+}
+
+#button_resetScore {
+    -fx-border-width: 3px;
+    -fx-border-color: #000000;
+    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 25;
+    -fx-font-size: 15px;
 }
 
 #buttonBack {
@@ -56,14 +67,55 @@
      -fx-opacity: 0.5;
 }
 
-.label {
+#label_player1 {
     -fx-font-family: "Mario Kart DS";
-    -fx-font-size: 22px;
+    -fx-font-size: 48px;
+    -fx-text-fill: #000000;
 }
 
-#vbox {
+#label_player2 {
+    -fx-font-family: "Mario Kart DS";
+    -fx-font-size: 48px;
+    -fx-text-fill: #000000;
+}
+
+#vbox1 {
     -fx-border-width: 4px;
     -fx-border-color: #000000;
     -fx-background-color: #FFFFFF;
     -fx-border-radius: 25;
 }
+
+#vbox2 {
+    -fx-border-width: 4px;
+    -fx-border-color: #000000;
+    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 25;
+}
+
+#gridPane {
+    -fx-background-image:url("resources/play_background_grid.png");
+}
+
+#label_player1score {
+    -fx-font-size: 48px;
+}
+
+#label_player2score {
+    -fx-font-size: 48px;
+}
+/*
+#label_scoreTitle1 {
+    -fx-border-width: 4px;
+    -fx-border-color: #000000;
+    -fx-background-color: red;
+    -fx-border-radius: 25;
+}
+
+#label_scoreTitle2 {
+    -fx-border-width: 4px;
+    -fx-border-color: #000000;
+    -fx-background-color: red;
+    -fx-border-radius: 25;
+}
+*/
