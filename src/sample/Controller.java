@@ -36,6 +36,8 @@ public class Controller {
 
     private int count = 0;
 
+//    private AI sam = new AI();
+
     @FXML
     private Button button_topLeft;
     @FXML
@@ -82,6 +84,11 @@ public class Controller {
         // switch to 1 player scene
     }
 
+    /**
+     * Switches from Main scene to Play scene
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void switch2PlayScene(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("play2.fxml"));
@@ -94,96 +101,35 @@ public class Controller {
         currentStage.sizeToScene();
         currentStage.show();
 
+        // Determine who will play first - player 1 or player 2 or computer
+        // if computer plays first -> play('X' or 'O', "button_topMid" or whatever chosen by algo)
+
     }
 
+    /**
+     * When a user clicks on any slot(button) on the board
+     * @param event the button event
+     */
     @FXML
     void buttonClicked(ActionEvent event) {
 
         String id = ((Button)(event.getSource())).getId();
-
         System.out.println(id);
-        // if event's button was already clicked, skip all these steps
-
         System.out.println(currentPlayer + " just played a turn.");
 
-        if(((Button)(event.getSource())).isDisabled())
-        {
-            return;
-        }
+        // play a turn
+        play(currentPlayer, id);
 
-        // based on current player's id, display an X or O image
-        if(currentPlayer == 'X')
-        {
-            ((Button)(event.getSource())).setStyle("-fx-background-image:url('/sample/resources/x_viking_small.png');");
-
-            System.out.println(((Button)(event.getSource())).getId() + " was clicked.");
-
-            ((Button)(event.getSource())).setMouseTransparent(true);
-
-            board.setMove(id, currentPlayer);
-
-            currentPlayer = 'O';
-
-            imageView_player1.setVisible(false);
-            imageView_player2.setVisible(true);
-
-        }
-        else
-        {
-            ((Button)(event.getSource())).setStyle("-fx-background-image:url('/sample/resources/o_viking_small.png');");
-
-            System.out.println(((Button)(event.getSource())).getId() + " was clicked.");
-
-            ((Button)(event.getSource())).setMouseTransparent(true);
-
-            board.setMove(id, currentPlayer);
-
-            currentPlayer = 'X';
-
-            imageView_player1.setVisible(true);
-            imageView_player2.setVisible(false);
-
-        }
         count++;
 
-        //check if anyone won
-        char winner = board.boardStatus();
-        if(winner != '-')
-        {
-            System.out.println("The winner is : " + winner);
-            button_resetBoard.setVisible(true);
-            // display winner pop icon on the side of the player who won
-            // display winner label title at the top
-
-            if(winner == 'X')
-            {
-                label_winner1.setText("winner!");
-                imageView_1.setVisible(true);
-                player1score++;
-                label_player1score.setText("" + player1score);
-            }
-            else if(winner == 'O')
-            {
-                label_winner2.setText("winner!");
-                imageView_2.setVisible(true);
-                player2score++;
-                label_player2score.setText("" + player2score);
-            }
-
-            for(Node slot: gridPane.getChildren())
-            {
-                slot.setMouseTransparent(true);
-            }
-
-            winStatus = true;
-        }
-        else
-        {
-            if(count == 9)
-                button_resetBoard.setVisible(true);
-        }
+        checkWinner();
     }
 
+    /**
+     * Clears the board and resets back to start formation (Does not affect the scoreboard)
+     * @param actionEvent the button event
+     */
+    @FXML
     public void resetClicked(ActionEvent actionEvent) {
 
         button_topLeft.setStyle("-fx-background-color: none;");
@@ -209,13 +155,9 @@ public class Controller {
         currentPlayer = 'X';
         count = 0;
 
-        // hide the reset board button
-//        button_resetBoard.setVisible(false);
-
-        // reset "winner!" back to being transparent
+        // reset "winner!" and small viking head image back to being transparent
         label_winner1.setText("");
         label_winner2.setText("");
-
         imageView_1.setVisible(false);
         imageView_2.setVisible(false);
 
@@ -226,20 +168,27 @@ public class Controller {
         imageView_player1.setVisible(true);
         imageView_player2.setVisible(false);
 
-        // reset all button backgrounds to transparent
-        // set all buttons setMouseTransparent(false)
-        // set player back to O
+        winStatus = false;
 
     }
 
-
-    public void resetScoreClicked(ActionEvent actionEvent) {
-
+    /**
+     * Resets the scoreboard to all 0's
+     * @param actionEvent the button event
+     */
+    @FXML
+    public void resetScoreClicked(ActionEvent actionEvent)
+    {
         label_player1score.setText("0");
         label_player2score.setText("0");
-
     }
 
+    /**
+     * Goes back to Main scene when back button is pressed from Play scene
+     * @param actionEvent the button event
+     * @throws IOException if fxml file cannot be loaded
+     */
+    @FXML
     public void buttonBackClicked(ActionEvent actionEvent) throws IOException {
 
         // show a popup that says are you sure you would like to go back to main menu and discontinue this game?
@@ -257,4 +206,96 @@ public class Controller {
         currentStage.show();
 
     }
+
+    /**
+     * Plays a turn and sets a move on the board and goes to next player
+     * @param XO the current player character as in 'X' or 'O'
+     * @param id the id of the slot on the board (i.e. "button_topLeft)
+     */
+    private void play(char XO, String id)
+    {
+        Button button = findButton(id);
+
+        if(XO == 'X')
+        {
+            button.setStyle("-fx-background-image:url('/sample/resources/x_viking_small.png');");
+
+            System.out.println(button.getId() + " was clicked.");
+
+            button.setMouseTransparent(true);
+
+            board.setMove(id, currentPlayer);
+
+            currentPlayer = 'O';
+
+            imageView_player1.setVisible(false);
+            imageView_player2.setVisible(true);
+        }
+        else if (XO == 'O')
+        {
+            button.setStyle("-fx-background-image:url('/sample/resources/o_viking_small.png');");
+
+            System.out.println(button.getId() + " was clicked.");
+
+            button.setMouseTransparent(true);
+
+            board.setMove(id, currentPlayer);
+
+            currentPlayer = 'X';
+
+            imageView_player1.setVisible(true);
+            imageView_player2.setVisible(false);
+        }
+    }
+
+    /**
+     * Given a button id (i.e. "button_topLeft"), returns a matching Button object
+     * @param id the id of the slot on the board (i.e. "button_topLeft)
+     */
+    private Button findButton(String id)
+    {
+        for(Node slot: gridPane.getChildren())
+        {
+            if(slot.getId().equalsIgnoreCase(id))
+                return (Button)slot;
+        }
+        return null;
+    }
+
+    /**
+     * Checks the board if anyone won and if so, determine who is the winner
+     *
+     */
+    private void checkWinner()
+    {
+        char winner = board.boardStatus();
+
+        if(winner != '-')
+        {
+            System.out.println("The winner is : " + winner);
+
+            if(winner == 'X')
+            {
+                label_winner1.setText("winner!");
+                imageView_1.setVisible(true);
+                player1score++;
+                label_player1score.setText("" + player1score);
+            }
+            else if(winner == 'O')
+            {
+                label_winner2.setText("winner!");
+                imageView_2.setVisible(true);
+                player2score++;
+                label_player2score.setText("" + player2score);
+            }
+
+            // Disable all slots on the board. Game is over mate.
+            for(Node slot: gridPane.getChildren())
+                slot.setMouseTransparent(true);
+
+            winStatus = true;
+        }
+    }
+
+
 }
