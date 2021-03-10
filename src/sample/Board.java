@@ -6,9 +6,14 @@ public class Board {
 
     private int boardSize = 3;
 
-    public int getBoardSize()
+    public char[][] getBoard()
     {
-        return boardSize;
+        return board;
+    }
+
+    public Board()
+    {
+        this(3, 3);
     }
 
     public Board(int i, int j)
@@ -133,7 +138,5 @@ public class Board {
             }
         }
     }
-
-
 
 }

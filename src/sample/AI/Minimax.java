@@ -2,47 +2,56 @@ package sample.AI;
 
 import sample.Board;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Minimax implements BoardEvaluator {
+public class Minimax extends Board implements BoardEvaluator {
 
     private boolean isMaxPlayer;
+    private static final char BLANK = ' ';
+
+    public Minimax()
+    {
+        super();
+    }
 
     public boolean isMaxPlayer()
     {
         return isMaxPlayer;
     }
 
-    public int minimax(char[][] board, char currentPlayer, Node node, boolean isMaxPlayer)
+    public int minimax(char[][] board, char currentPlayer, boolean isMaxPlayer)
     {
-        // if board is in terminal state
+        // if board reaches highest score or is in terminal state
         // return static evaluation of position
 
         int score = evaluateBoard(board, currentPlayer);
 
+        if(Math.abs(score) == 100 || score == 0)
+        {
+            return score;
+        }
 
         // If it's the maximizing player's turn (X),
         // loop through each child or move from that current position
         // and make the recursive call.
 
-
         if (isMaxPlayer)
         {
             // Worst possible case for X
-            int max = (int)Double.NEGATIVE_INFINITY;
+            int maxValue = (int)Double.NEGATIVE_INFINITY;
 
-            for (Node child: node.getNodes())
+            for (int row = 0; row < board.length; row++)
             {
-                int bestMove = minimax(board, currentPlayer, child, false);
-
-                if (bestMove > max)
+                for(int col = 0; col < board.length; col++)
                 {
-                    max = bestMove;
+                    if(board[row][col] == BLANK)
+                    {
+                        board[row][col] = currentPlayer;
+                        maxValue = Math.max(maxValue, minimax(board, currentPlayer, false));
+                        board[row][col] = BLANK;
+                    }
                 }
             }
 
-            return max;
+            return maxValue;
         }
 
         // If it's the minimizing player's turn (O),
@@ -52,22 +61,24 @@ public class Minimax implements BoardEvaluator {
         else
         {
             // Worst possible case for O
-            int min = (int)Double.POSITIVE_INFINITY;
+            int minValue = (int)Double.POSITIVE_INFINITY;
 
-            for (Node child: node.getNodes())
+            for (int row = 0; row < board.length; row++)
             {
-                int temp = minimax(board, currentPlayer, child, false);
-
-                if (temp < min)
+                for(int col = 0; col < board.length; col++)
                 {
-                    min = temp;
+                    if(board[row][col] == BLANK)
+                    {
+                        board[row][col] = currentPlayer;
+                        minValue = Math.min(minValue, minimax(board, currentPlayer, true));
+                        board[row][col] = BLANK;
+                    }
                 }
             }
 
-            return min;
+            return minValue;
         }
     }
-
 
     @Override
     public int evaluateBoard(char[][] board, char currentPlayer)
