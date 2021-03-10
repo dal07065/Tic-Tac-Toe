@@ -17,7 +17,7 @@
          </padding>
       </Label>
       <Button fx:id="button_1player" mnemonicParsing="false" onAction="#switch1PlayScene" text="1 player" />
-      <Button fx:id="button_2player" mnemonicParsing="false" onAction="#switch2PlayScene" text="2 player" />
+      <Button fx:id="button_2player" mnemonicParsing="false" onAction="#switch2SelectRole" text="2 player" />
    </children>
    <padding>
       <Insets bottom="100.0" left="100.0" right="100.0" top="100.0" />
