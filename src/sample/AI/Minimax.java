@@ -1,9 +1,11 @@
 package sample.AI;
 
+import sample.Board;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Minimax {
+public class Minimax implements BoardEvaluator {
 
     private boolean isMaxPlayer;
 
@@ -12,10 +14,12 @@ public class Minimax {
         return isMaxPlayer;
     }
 
-    public int minimax(Node node, boolean isMaxPlayer)
+    public int minimax(char[][] board, char currentPlayer, Node node, boolean isMaxPlayer)
     {
-        // if node is leaf
+        // if board is in terminal state
         // return static evaluation of position
+
+        int score = evaluateBoard(board, currentPlayer);
 
 
         // If it's the maximizing player's turn (X),
@@ -30,7 +34,7 @@ public class Minimax {
 
             for (Node child: node.getNodes())
             {
-                int bestMove = minimax(child, false);
+                int bestMove = minimax(board, currentPlayer, child, false);
 
                 if (bestMove > max)
                 {
@@ -52,7 +56,7 @@ public class Minimax {
 
             for (Node child: node.getNodes())
             {
-                int temp = minimax(child, true);
+                int temp = minimax(board, currentPlayer, child, false);
 
                 if (temp < min)
                 {
@@ -65,5 +69,93 @@ public class Minimax {
     }
 
 
+    @Override
+    public int evaluateBoard(char[][] board, char currentPlayer)
+    {
+        // Check row winner
 
+        for (int row = 0; row < 3; row++)
+        {
+            if (currentPlayer == 'X')
+            {
+                if(board[row][0] == currentPlayer && board[row][1] == currentPlayer &&
+                        board[row][2] == currentPlayer)
+                {
+                    return +100;
+                }
+            }
+            else if (currentPlayer == 'O')
+            {
+                if(board[row][0] == currentPlayer && board[row][1] == currentPlayer &&
+                        board[row][2] == currentPlayer)
+                {
+                    return -100;
+                }
+            }
+        }
+
+        // Check column winner
+
+        for (int col = 0; col < 3; col++)
+        {
+            if (currentPlayer == 'X')
+            {
+                if(board[0][col] == currentPlayer && board[1][col] == currentPlayer &&
+                        board[2][col] == currentPlayer)
+                {
+                    return +100;
+                }
+            }
+            else if (currentPlayer == 'O')
+            {
+                if(board[0][col] == currentPlayer && board[1][col] == currentPlayer &&
+                        board[2][col] == currentPlayer)
+                {
+                    return -100;
+                }
+            }
+        }
+
+        // Check \ diagonal winner
+
+        if (currentPlayer == 'X')
+        {
+            if(board[0][0] == currentPlayer && board[1][1] == currentPlayer &&
+                    board[2][2] == currentPlayer)
+            {
+                return +100;
+            }
+        }
+        else if (currentPlayer == 'O')
+        {
+            if(board[0][0] == currentPlayer && board[1][1] == currentPlayer &&
+                    board[2][2] == currentPlayer)
+            {
+                return -100;
+            }
+        }
+
+        // Check / diagonal winner
+
+        if (currentPlayer == 'X')
+        {
+            if(board[0][2] == currentPlayer && board[1][1] == currentPlayer &&
+                    board[2][0] == currentPlayer)
+            {
+                return +100;
+            }
+        }
+        else if (currentPlayer == 'O')
+        {
+            if(board[0][2] == currentPlayer && board[1][1] == currentPlayer &&
+                    board[2][0] == currentPlayer)
+            {
+                return -100;
+            }
+        }
+
+        // If none of the above cases occur, then it's a tie, so return a score of 0
+
+        return 0;
+    }
 }
