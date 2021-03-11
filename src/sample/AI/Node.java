@@ -26,6 +26,11 @@ public class Node {
         return isMax;
     }
 
+    public void addChild(Node child)
+    {
+        nodes.add(child);
+    }
+
     public List<Node> getNodes()
     {
         return nodes;

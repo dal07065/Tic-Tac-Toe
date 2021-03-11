@@ -2,9 +2,18 @@ package sample;
 
 public class Board {
 
-    private char board[][];
+    private char[][] board;
 
     private int boardSize = 3;
+
+    private int posLeft = 9;
+
+    public char[][] getBoard() { return board; }
+
+    public int getBoardSize()
+    {
+        return boardSize;
+    }
 
     public Board(int i, int j)
     {
@@ -33,7 +42,7 @@ public class Board {
             }
         }
 
-        // Check collumn vertical winners
+        // Check column vertical winners
 
         for(int i = 0; i < boardSize; i++)
         {
@@ -127,6 +136,7 @@ public class Board {
                 board[i][j] = '-';
             }
         }
+        posLeft = 9;
     }
 
 

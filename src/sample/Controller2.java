@@ -3,25 +3,32 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-//import sample.Spot;
+import sample.AI.Minimax;
+import sample.Spot;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 
-public class Controller {
+public class Controller2 {
 
     Board board = new Board(3, 3);
 
-    private static char currentPlayer;
-    private static char startingPlayer;
+    private static char currentPlayer = 'X';
 
     private int player1score = 0;
     private int player2score = 0;
@@ -29,8 +36,6 @@ public class Controller {
     private boolean winStatus = false;
 
     private int count = 0;
-
-//    private AI sam = new AI();
 
     @FXML
     private Button button_topLeft;
@@ -68,85 +73,13 @@ public class Controller {
     @FXML
     private Label label_player2score;
     @FXML
-    private Label label_player1;
-    @FXML
-    private Label label_player2;
-    @FXML
     private ImageView imageView_player1;
     @FXML
     private ImageView imageView_player2;
 
-    //If 2 Player button is selected, switch to scene that asks for the player who wants to start first
-    @FXML
-    void switch2SelectRole(ActionEvent event) throws IOException
+    public void initializeAfterLoad()
     {
-        Parent root = FXMLLoader.load(getClass().getResource("selectRole.fxml"));
-        Scene scenePlay = new Scene(root, 634, 446);
-        scenePlay.getStylesheets().add(Main.class.getResource("Main.css").toExternalForm());
 
-        Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-
-        currentStage.setScene(scenePlay);
-        currentStage.sizeToScene();
-        currentStage.show();
-    }
-
-    @FXML
-    void switch1PlayScene(ActionEvent event) throws IOException {
-
-        Parent root = FXMLLoader.load(getClass().getResource("play2.fxml"));
-        Scene scenePlay = new Scene(root, 634, 446);
-        scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
-
-        Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-
-        currentStage.setScene(scenePlay);
-        currentStage.sizeToScene();
-        currentStage.show();
-    }
-
-    /**
-     * If player clicks player X button when program asks which player wants to start
-     * first, then scene will switch to scene showing player X is player 1 and
-     * player O is player 2
-     * @param event
-     * @throws IOException
-     */
-    @FXML
-    void switch2PlaySceneX(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("play2.fxml"));
-        Scene scenePlay = new Scene(root, 634, 446);
-        scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
-
-        Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-
-        currentStage.setScene(scenePlay);
-        currentStage.sizeToScene();
-        currentStage.show();
-
-        setCurrentPlayer('X');
-        setStartingPlayer('X');
-
-    }
-
-    /* If user clicks player O button when program asks which player wants to start
-       first, then scene will switch to scene showing player O is player 1 and
-       player X is player 2
-    */
-    @FXML
-    void switch2PlaySceneO(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("play2.fxml"));
-        Scene scenePlay = new Scene(root, 634, 446);
-        scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
-
-        Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-
-        currentStage.setScene(scenePlay);
-        currentStage.sizeToScene();
-        currentStage.show();
-
-        setCurrentPlayer('O');
-        setStartingPlayer('O');
     }
 
     /**
@@ -163,9 +96,6 @@ public class Controller {
         // play a turn
         play(currentPlayer, id);
 
-        count++;
-
-        checkWinner();
     }
 
     /**
@@ -195,8 +125,7 @@ public class Controller {
         button_botMid.setMouseTransparent(false);
         button_botRight.setMouseTransparent(false);
 
-        currentPlayer = startingPlayer;
-
+        currentPlayer = 'X';
         count = 0;
 
         // reset "winner!" and small viking head image back to being transparent
@@ -215,6 +144,7 @@ public class Controller {
         winStatus = false;
 
     }
+
 
     /**
      * Resets the scoreboard to all 0's
@@ -249,18 +179,8 @@ public class Controller {
         currentStage.setResizable(false);
         currentStage.show();
 
-    }
 
-    //Sets up and tells program who the current player is
-    public void setCurrentPlayer(char player)
-    {
-        this.currentPlayer = player;
-    }
 
-    //Sets up and tells program who player 1 is
-    public void setStartingPlayer(char startPlayer)
-    {
-        this.startingPlayer = startPlayer;
     }
 
     /**
@@ -268,21 +188,10 @@ public class Controller {
      * @param XO the current player character as in 'X' or 'O'
      * @param id the id of the slot on the board (i.e. "button_topLeft)
      */
-
+    @FXML
     private void play(char XO, String id)
     {
         Button button = findButton(id);
-
-        if(startingPlayer == 'X')
-        {
-            label_player1.setText("x");
-            label_player2.setText("o");
-        }
-        else
-        {
-            label_player1.setText("o");
-            label_player2.setText("x");
-        }
 
         if(XO == 'X')
         {
@@ -294,19 +203,10 @@ public class Controller {
 
             board.setMove(id, currentPlayer);
 
-            if(currentPlayer == 'O')
-            {
-                imageView_player1.setVisible(false);
-                imageView_player2.setVisible(true);
-            }
-            else
-            {
-                imageView_player1.setVisible(true);
-                imageView_player2.setVisible(false);
-            }
-
             currentPlayer = 'O';
 
+            imageView_player1.setVisible(false);
+            imageView_player2.setVisible(true);
         }
         else if (XO == 'O')
         {
@@ -318,26 +218,22 @@ public class Controller {
 
             board.setMove(id, currentPlayer);
 
-            if(currentPlayer == 'X')
-            {
-                imageView_player1.setVisible(true);
-                imageView_player2.setVisible(false);
-            }
-            else
-            {
-                imageView_player1.setVisible(false);
-                imageView_player2.setVisible(true);
-            }
-
             currentPlayer = 'X';
 
+            imageView_player1.setVisible(true);
+            imageView_player2.setVisible(false);
         }
+
+        count++;
+
+        checkWinner();
     }
 
     /**
      * Given a button id (i.e. "button_topLeft"), returns a matching Button object
      * @param id the id of the slot on the board (i.e. "button_topLeft)
      */
+    @FXML
     private Button findButton(String id)
     {
         for(Node slot: gridPane.getChildren())
@@ -362,27 +258,17 @@ public class Controller {
 
             if(winner == 'X')
             {
-                if(startingPlayer == 'X')
-                {
-                    showWinner1();
-                }
-
-                if(startingPlayer == 'O')
-                {
-                    showWinner2();
-                }
+                label_winner1.setText("winner!");
+                imageView_1.setVisible(true);
+                player1score++;
+                label_player1score.setText("" + player1score);
             }
             else if(winner == 'O')
             {
-                if(startingPlayer == 'O')
-                {
-                    showWinner1();
-                }
-
-                if(startingPlayer == 'X')
-                {
-                    showWinner2();
-                }
+                label_winner2.setText("winner!");
+                imageView_2.setVisible(true);
+                player2score++;
+                label_player2score.setText("" + player2score);
             }
 
             // Disable all slots on the board. Game is over mate.
@@ -391,24 +277,6 @@ public class Controller {
 
             winStatus = true;
         }
-    }
-
-    //Program will show that player 1 has won the round
-    public void showWinner1()
-    {
-        label_winner1.setText("winner!");
-        imageView_1.setVisible(true);
-        player1score++;
-        label_player1score.setText("" + player1score);
-    }
-
-    //Program will show that player 2 has won the round
-    public void showWinner2()
-    {
-        label_winner2.setText("winner!");
-        imageView_2.setVisible(true);
-        player2score++;
-        label_player2score.setText("" + player2score);
     }
 
 
