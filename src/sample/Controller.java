@@ -27,7 +27,8 @@ public class Controller {
 
     Board board = new Board(3, 3);
 
-    private char currentPlayer = 'X';
+    private static char currentPlayer;
+    private static char startingPlayer;
 
     private int player1score = 0;
     private int player2score = 0;
@@ -74,14 +75,40 @@ public class Controller {
     @FXML
     private Label label_player2score;
     @FXML
+    private Label label_player1;
+    @FXML
+    private Label label_player2;
+    @FXML
     private ImageView imageView_player1;
     @FXML
     private ImageView imageView_player2;
 
     @FXML
+    void switch2SelectRole(ActionEvent event) throws IOException
+    {
+        Parent root = FXMLLoader.load(getClass().getResource("selectRole.fxml"));
+        Scene scenePlay = new Scene(root, 634, 446);
+        scenePlay.getStylesheets().add(Main.class.getResource("Main.css").toExternalForm());
+
+        Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+        currentStage.setScene(scenePlay);
+        currentStage.sizeToScene();
+        currentStage.show();
+    }
+
+    @FXML
     void switch1PlayScene(ActionEvent event) throws IOException {
 
-        // switch to 1 player scene
+        Parent root = FXMLLoader.load(getClass().getResource("play2.fxml"));
+        Scene scenePlay = new Scene(root, 634, 446);
+        scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
+
+        Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+        currentStage.setScene(scenePlay);
+        currentStage.sizeToScene();
+        currentStage.show();
     }
 
     /**
@@ -90,7 +117,7 @@ public class Controller {
      * @throws IOException
      */
     @FXML
-    void switch2PlayScene(ActionEvent event) throws IOException {
+    void switch2PlaySceneX(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("play2.fxml"));
         Scene scenePlay = new Scene(root, 634, 446);
         scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
@@ -101,9 +128,25 @@ public class Controller {
         currentStage.sizeToScene();
         currentStage.show();
 
-        // Determine who will play first - player 1 or player 2 or computer
-        // if computer plays first -> play('X' or 'O', "button_topMid" or whatever chosen by algo)
+        setCurrentPlayer('X');
+        setStartingPlayer('X');
 
+    }
+
+    @FXML
+    void switch2PlaySceneO(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("play2.fxml"));
+        Scene scenePlay = new Scene(root, 634, 446);
+        scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
+
+        Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+        currentStage.setScene(scenePlay);
+        currentStage.sizeToScene();
+        currentStage.show();
+
+        setCurrentPlayer('O');
+        setStartingPlayer('O');
     }
 
     /**
@@ -152,7 +195,8 @@ public class Controller {
         button_botMid.setMouseTransparent(false);
         button_botRight.setMouseTransparent(false);
 
-        currentPlayer = 'X';
+        currentPlayer = startingPlayer;
+
         count = 0;
 
         // reset "winner!" and small viking head image back to being transparent
@@ -207,14 +251,36 @@ public class Controller {
 
     }
 
+    public void setCurrentPlayer(char player)
+    {
+        this.currentPlayer = player;
+    }
+
+    public void setStartingPlayer(char startPlayer)
+    {
+        this.startingPlayer = startPlayer;
+    }
+
     /**
      * Plays a turn and sets a move on the board and goes to next player
      * @param XO the current player character as in 'X' or 'O'
      * @param id the id of the slot on the board (i.e. "button_topLeft)
      */
+
     private void play(char XO, String id)
     {
         Button button = findButton(id);
+
+        if(startingPlayer == 'X')
+        {
+            label_player1.setText("x");
+            label_player2.setText("o");
+        }
+        else
+        {
+            label_player1.setText("o");
+            label_player2.setText("x");
+        }
 
         if(XO == 'X')
         {
@@ -226,10 +292,19 @@ public class Controller {
 
             board.setMove(id, currentPlayer);
 
+            if(currentPlayer == 'O')
+            {
+                imageView_player1.setVisible(false);
+                imageView_player2.setVisible(true);
+            }
+            else
+            {
+                imageView_player1.setVisible(true);
+                imageView_player2.setVisible(false);
+            }
+
             currentPlayer = 'O';
 
-            imageView_player1.setVisible(false);
-            imageView_player2.setVisible(true);
         }
         else if (XO == 'O')
         {
@@ -241,10 +316,19 @@ public class Controller {
 
             board.setMove(id, currentPlayer);
 
+            if(currentPlayer == 'X')
+            {
+                imageView_player1.setVisible(true);
+                imageView_player2.setVisible(false);
+            }
+            else
+            {
+                imageView_player1.setVisible(false);
+                imageView_player2.setVisible(true);
+            }
+
             currentPlayer = 'X';
 
-            imageView_player1.setVisible(true);
-            imageView_player2.setVisible(false);
         }
     }
 
@@ -276,17 +360,27 @@ public class Controller {
 
             if(winner == 'X')
             {
-                label_winner1.setText("winner!");
-                imageView_1.setVisible(true);
-                player1score++;
-                label_player1score.setText("" + player1score);
+                if(startingPlayer == 'X')
+                {
+                    showWinner1();
+                }
+
+                if(startingPlayer == 'O')
+                {
+                    showWinner2();
+                }
             }
             else if(winner == 'O')
             {
-                label_winner2.setText("winner!");
-                imageView_2.setVisible(true);
-                player2score++;
-                label_player2score.setText("" + player2score);
+                if(startingPlayer == 'O')
+                {
+                    showWinner1();
+                }
+
+                if(startingPlayer == 'X')
+                {
+                    showWinner2();
+                }
             }
 
             // Disable all slots on the board. Game is over mate.
@@ -295,6 +389,22 @@ public class Controller {
 
             winStatus = true;
         }
+    }
+
+    public void showWinner1()
+    {
+        label_winner1.setText("winner!");
+        imageView_1.setVisible(true);
+        player1score++;
+        label_player1score.setText("" + player1score);
+    }
+
+    public void showWinner2()
+    {
+        label_winner2.setText("winner!");
+        imageView_2.setVisible(true);
+        player2score++;
+        label_player2score.setText("" + player2score);
     }
 
 

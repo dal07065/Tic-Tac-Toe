@@ -19,7 +19,7 @@
             <VBox fx:id="vbox1" alignment="CENTER" prefHeight="228.0" prefWidth="137.0">
                <children>
                   <Label text="player 1:" />
-                  <Label fx:id="label_player1" text="x" />
+                  <Label fx:id="label_player1" text="x"/>
                   <Label fx:id="label_winner1">
                      <VBox.margin>
                         <Insets bottom="20.0" top="20.0" />
