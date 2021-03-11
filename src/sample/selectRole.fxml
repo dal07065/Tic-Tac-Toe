@@ -5,19 +5,19 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane prefHeight="446.0" prefWidth="639.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
-      <Text layoutX="167.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose a player!">
+      <Text layoutX="187.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose a player!">
          <font>
             <Font size="36.0" />
          </font>
       </Text>
-      <Button layoutX="123.0" layoutY="187.0" mnemonicParsing="false" onAction="#switch2PlaySceneX" text="Player X">
+      <Button layoutX="143.0" layoutY="273.0" mnemonicParsing="false" onAction="#switch2PlaySceneX" text="Player X">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button layoutX="385.0" layoutY="187.0" mnemonicParsing="false" onAction="#switch2PlaySceneO" text="Player O">
+      <Button layoutX="405.0" layoutY="273.0" mnemonicParsing="false" onAction="#switch2PlaySceneO" text="Player O">
          <font>
             <Font size="18.0" />
          </font>
