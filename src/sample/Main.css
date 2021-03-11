@@ -18,6 +18,13 @@
     */
 }
 
+.label
+{
+    -fx-font-family: 'Mario Kart DS';
+    -fx-font-size: 35px;
+    -fx-text-fill: #000000;
+}
+
 .button {
     -fx-text-fill: white;
     -fx-font-family: "Mario Kart DS";

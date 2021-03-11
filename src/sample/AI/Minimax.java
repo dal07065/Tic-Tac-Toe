@@ -39,7 +39,7 @@ public class Minimax implements BoardEvaluator {
                     {
                         board[i][j] = currentPlayer;
 //                        printBoard(board);
-                        int scoretemp = minimax(board, nextPlayer(currentPlayer), false);
+                        int scoretemp = minimax(board, nextPlayer(currentPlayer), false, 0);
                         board[i][j] = '-';
 
                         if(scoretemp > score)
@@ -64,7 +64,7 @@ public class Minimax implements BoardEvaluator {
                     {
                         board[i][j] = currentPlayer;
 //                        printBoard(board);
-                        int scoretemp = minimax(board, nextPlayer(currentPlayer), true);
+                        int scoretemp = minimax(board, nextPlayer(currentPlayer), true, 0);
                         board[i][j] = '-';
 
                         if(scoretemp < score)
@@ -99,13 +99,13 @@ public class Minimax implements BoardEvaluator {
         return buttonID;
     }
 
-    public int minimax(char[][] board, char currentPlayer, boolean isMaxPlayer)
+    public int minimax(char[][] board, char currentPlayer, boolean isMaxPlayer, int depth)
     {
         // if board is in terminal state
         // return static evaluation of position
         // either +100 for X, -100 for O, or 0 for tie
-        int score = evaluateBoard(board, currentPlayer);
-        if(score == -100 || score == 100)
+        int score = evaluateBoard(board, currentPlayer, depth);
+        if(score != 0)
             return score;
 
         // If it's the maximizing player's turn (X),
@@ -124,7 +124,7 @@ public class Minimax implements BoardEvaluator {
                     {
                         board[i][j] = currentPlayer;
 //                        printBoard(board);
-                        int bestMove = minimax(board, nextPlayer(currentPlayer), false);
+                        int bestMove = minimax(board, nextPlayer(currentPlayer), false, depth + 1);
                         board[i][j] = '-';
                         if (bestMove > max)
                         {
@@ -154,7 +154,7 @@ public class Minimax implements BoardEvaluator {
                     {
                         board[i][j] = currentPlayer;
 //                        printBoard(board);
-                        int temp = minimax(board, nextPlayer(currentPlayer), true);
+                        int temp = minimax(board, nextPlayer(currentPlayer), true, depth + 1);
                         board[i][j] = '-';
                         if (temp < min) {
                             min = temp;
@@ -174,7 +174,7 @@ public class Minimax implements BoardEvaluator {
      * @return +100 if maximizer wins, -100 if minimizer wins, 0 if its a tie or nothing
      */
     @Override
-    public int evaluateBoard(char[][] board, char currentPlayer)
+    public int evaluateBoard(char[][] board, char currentPlayer, int depth)
     {
         // Check row winner
 
@@ -185,7 +185,7 @@ public class Minimax implements BoardEvaluator {
                 if(board[row][0] == currentPlayer && board[row][1] == currentPlayer &&
                         board[row][2] == currentPlayer)
                 {
-                    return +100;
+                    return +100 - depth;
                 }
             }
             else if (currentPlayer == 'O')
@@ -193,7 +193,7 @@ public class Minimax implements BoardEvaluator {
                 if(board[row][0] == currentPlayer && board[row][1] == currentPlayer &&
                         board[row][2] == currentPlayer)
                 {
-                    return -100;
+                    return depth - 100;
                 }
             }
         }
@@ -207,7 +207,7 @@ public class Minimax implements BoardEvaluator {
                 if(board[0][col] == currentPlayer && board[1][col] == currentPlayer &&
                         board[2][col] == currentPlayer)
                 {
-                    return +100;
+                    return +100 - depth;
                 }
             }
             else if (currentPlayer == 'O')
@@ -215,7 +215,7 @@ public class Minimax implements BoardEvaluator {
                 if(board[0][col] == currentPlayer && board[1][col] == currentPlayer &&
                         board[2][col] == currentPlayer)
                 {
-                    return -100;
+                    return depth - 100;
                 }
             }
         }
@@ -227,7 +227,7 @@ public class Minimax implements BoardEvaluator {
             if(board[0][0] == currentPlayer && board[1][1] == currentPlayer &&
                     board[2][2] == currentPlayer)
             {
-                return +100;
+                return +100 - depth;
             }
         }
         else if (currentPlayer == 'O')
@@ -235,7 +235,7 @@ public class Minimax implements BoardEvaluator {
             if(board[0][0] == currentPlayer && board[1][1] == currentPlayer &&
                     board[2][2] == currentPlayer)
             {
-                return -100;
+                return depth - 100;
             }
         }
 
@@ -246,7 +246,7 @@ public class Minimax implements BoardEvaluator {
             if(board[0][2] == currentPlayer && board[1][1] == currentPlayer &&
                     board[2][0] == currentPlayer)
             {
-                return +100;
+                return +100 - depth;
             }
         }
         else if (currentPlayer == 'O')
@@ -254,7 +254,7 @@ public class Minimax implements BoardEvaluator {
             if(board[0][2] == currentPlayer && board[1][1] == currentPlayer &&
                     board[2][0] == currentPlayer)
             {
-                return -100;
+                return depth - 100;
             }
         }
 

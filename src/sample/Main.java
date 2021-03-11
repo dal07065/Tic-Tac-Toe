@@ -18,6 +18,8 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         scene.getStylesheets().add(Main.class.getResource("Main.css").toExternalForm());
         primaryStage.show();
+
+//        root.getStyleableNode().get
     }
 
     public static void main(String[] args) {

@@ -15,6 +15,8 @@ import sample.AI.Minimax;
 
 import java.io.IOException;
 
+import static java.lang.Thread.sleep;
+
 
 public class Controller1 {
 
@@ -79,10 +81,17 @@ public class Controller1 {
 
     public void initializeAfterLoad()
     {
-        String buttonID = ai.findBestMove(board, currentPlayer, true);
-        System.out.println(buttonID);
-        System.out.println(currentPlayer + " just played a turn.");
-        play(currentPlayer, buttonID);
+
+        if(startingPlayer == 'X')
+        {
+            label_player1.setText("x");
+            label_player2.setText("o");
+        }
+        else
+        {
+            label_player1.setText("o");
+            label_player2.setText("x");
+        }
     }
 
     /**
@@ -90,7 +99,7 @@ public class Controller1 {
      * @param event the button event
      */
     @FXML
-    void buttonClicked(ActionEvent event) {
+    void buttonClicked(ActionEvent event) throws InterruptedException {
 
         String id = ((Button)(event.getSource())).getId();
         System.out.println(id);
@@ -103,7 +112,10 @@ public class Controller1 {
             String buttonID = ai.findBestMove(board, currentPlayer, false);
             System.out.println(buttonID);
             System.out.println(currentPlayer + " just played a turn.");
+
             play(currentPlayer, buttonID);
+
+
         }
 
     }
@@ -154,11 +166,6 @@ public class Controller1 {
 
         winStatus = false;
 
-        String buttonID = ai.findBestMove(board, currentPlayer, false);
-        System.out.println(buttonID);
-        System.out.println(currentPlayer + " just played a turn.");
-        play(currentPlayer, buttonID);
-
     }
 
 
@@ -208,20 +215,9 @@ public class Controller1 {
      */
 
     @FXML
-    private void play(char XO, String id)
-    {
+    private void play(char XO, String id) throws InterruptedException {
         Button button = findButton(id);
 
-        if(startingPlayer == 'X')
-        {
-            label_player1.setText("x");
-            label_player2.setText("o");
-        }
-        else
-        {
-            label_player1.setText("o");
-            label_player2.setText("x");
-        }
 
         if(XO == 'X')
         {
@@ -232,17 +228,6 @@ public class Controller1 {
             button.setMouseTransparent(true);
 
             board.setMove(id, currentPlayer);
-
-            if(currentPlayer == 'O')
-            {
-                imageView_player1.setVisible(false);
-                imageView_player2.setVisible(true);
-            }
-            else
-            {
-                imageView_player1.setVisible(true);
-                imageView_player2.setVisible(false);
-            }
 
             currentPlayer = 'O';
 
@@ -257,24 +242,29 @@ public class Controller1 {
 
             board.setMove(id, currentPlayer);
 
-            if(currentPlayer == 'X')
-            {
-                imageView_player1.setVisible(true);
-                imageView_player2.setVisible(false);
-            }
-            else
-            {
-                imageView_player1.setVisible(false);
-                imageView_player2.setVisible(true);
-            }
-
             currentPlayer = 'X';
 
         }
 
+        switchPlayerIconImages();
+
         count++;
 
         checkWinner();
+
+    }
+
+    private void switchPlayerIconImages()
+    {
+        if(imageView_player1.isVisible()) {
+            imageView_player1.setVisible(false);
+            imageView_player2.setVisible(true);
+        }
+        else
+        {
+            imageView_player1.setVisible(true);
+            imageView_player2.setVisible(false);
+        }
     }
 
     /**
@@ -353,6 +343,18 @@ public class Controller1 {
         imageView_2.setVisible(true);
         player2score++;
         label_player2score.setText("" + player2score);
+    }
+
+    //Sets up and tells program who the current player is
+    public void setCurrentPlayer(char player)
+    {
+        this.currentPlayer = player;
+    }
+
+    //Sets up and tells program who player 1 is
+    public void setStartingPlayer(char startPlayer)
+    {
+        this.startingPlayer = startPlayer;
     }
 
 
