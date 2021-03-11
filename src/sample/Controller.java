@@ -3,24 +3,17 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import sample.Spot;
+//import sample.Spot;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 
 public class Controller {
@@ -83,6 +76,7 @@ public class Controller {
     @FXML
     private ImageView imageView_player2;
 
+    //If 2 Player button is selected, switch to scene that asks for the player who wants to start first
     @FXML
     void switch2SelectRole(ActionEvent event) throws IOException
     {
@@ -112,7 +106,9 @@ public class Controller {
     }
 
     /**
-     * Switches from Main scene to Play scene
+     * If player clicks player X button when program asks which player wants to start
+     * first, then scene will switch to scene showing player X is player 1 and
+     * player O is player 2
      * @param event
      * @throws IOException
      */
@@ -133,6 +129,10 @@ public class Controller {
 
     }
 
+    /* If user clicks player O button when program asks which player wants to start
+       first, then scene will switch to scene showing player O is player 1 and
+       player X is player 2
+    */
     @FXML
     void switch2PlaySceneO(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("play2.fxml"));
@@ -251,11 +251,13 @@ public class Controller {
 
     }
 
+    //Sets up and tells program who the current player is
     public void setCurrentPlayer(char player)
     {
         this.currentPlayer = player;
     }
 
+    //Sets up and tells program who player 1 is
     public void setStartingPlayer(char startPlayer)
     {
         this.startingPlayer = startPlayer;
@@ -391,6 +393,7 @@ public class Controller {
         }
     }
 
+    //Program will show that player 1 has won the round
     public void showWinner1()
     {
         label_winner1.setText("winner!");
@@ -399,6 +402,7 @@ public class Controller {
         label_player1score.setText("" + player1score);
     }
 
+    //Program will show that player 2 has won the round
     public void showWinner2()
     {
         label_winner2.setText("winner!");
