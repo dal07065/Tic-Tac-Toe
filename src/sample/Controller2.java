@@ -17,17 +17,18 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import sample.AI.Minimax;
 import sample.Spot;
 
 import java.io.IOException;
 import java.util.HashMap;
 
 
-public class Controller {
+public class Controller2 {
 
     Board board = new Board(3, 3);
 
-    private char currentPlayer = 'X';
+    private static char currentPlayer = 'X';
 
     private int player1score = 0;
     private int player2score = 0;
@@ -35,8 +36,6 @@ public class Controller {
     private boolean winStatus = false;
 
     private int count = 0;
-
-//    private AI sam = new AI();
 
     @FXML
     private Button button_topLeft;
@@ -78,31 +77,8 @@ public class Controller {
     @FXML
     private ImageView imageView_player2;
 
-    @FXML
-    void switch1PlayScene(ActionEvent event) throws IOException {
-
-        // switch to 1 player scene
-    }
-
-    /**
-     * Switches from Main scene to Play scene
-     * @param event
-     * @throws IOException
-     */
-    @FXML
-    void switch2PlayScene(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("play2.fxml"));
-        Scene scenePlay = new Scene(root, 634, 446);
-        scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
-
-        Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-
-        currentStage.setScene(scenePlay);
-        currentStage.sizeToScene();
-        currentStage.show();
-
-        // Determine who will play first - player 1 or player 2 or computer
-        // if computer plays first -> play('X' or 'O', "button_topMid" or whatever chosen by algo)
+    public void initializeAfterLoad()
+    {
 
     }
 
@@ -120,9 +96,6 @@ public class Controller {
         // play a turn
         play(currentPlayer, id);
 
-        count++;
-
-        checkWinner();
     }
 
     /**
@@ -172,6 +145,7 @@ public class Controller {
 
     }
 
+
     /**
      * Resets the scoreboard to all 0's
      * @param actionEvent the button event
@@ -205,6 +179,8 @@ public class Controller {
         currentStage.setResizable(false);
         currentStage.show();
 
+
+
     }
 
     /**
@@ -212,6 +188,7 @@ public class Controller {
      * @param XO the current player character as in 'X' or 'O'
      * @param id the id of the slot on the board (i.e. "button_topLeft)
      */
+    @FXML
     private void play(char XO, String id)
     {
         Button button = findButton(id);
@@ -246,12 +223,17 @@ public class Controller {
             imageView_player1.setVisible(true);
             imageView_player2.setVisible(false);
         }
+
+        count++;
+
+        checkWinner();
     }
 
     /**
      * Given a button id (i.e. "button_topLeft"), returns a matching Button object
      * @param id the id of the slot on the board (i.e. "button_topLeft)
      */
+    @FXML
     private Button findButton(String id)
     {
         for(Node slot: gridPane.getChildren())

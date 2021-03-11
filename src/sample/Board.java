@@ -6,6 +6,10 @@ public class Board {
 
     private int boardSize = 3;
 
+    private int posLeft = 9;
+
+    public char[][] getBoard() { return board; }
+
     public int getBoardSize()
     {
         return boardSize;
@@ -132,6 +136,7 @@ public class Board {
                 board[i][j] = '-';
             }
         }
+        posLeft = 9;
     }
 
 

@@ -7,38 +7,130 @@ import java.util.List;
 
 public class Minimax implements BoardEvaluator {
 
-    private boolean isMaxPlayer;
+//    private boolean isMaxPlayer;
+//
+//    public boolean isMaxPlayer()
+//    {
+//        return isMaxPlayer;
+//    }
 
-    public boolean isMaxPlayer()
+    public String findBestMove(Board boardObj, char currentPlayer, boolean isMaxPlayer)
     {
-        return isMaxPlayer;
+        /*
+            1. Determine what spots on the board are AVAILABLE/EMPTY
+            2. Add those spots to the arraylist
+            3. Run minimax algorithm on each one
+            4. Find best score from the array of spots
+            5. Correlate that spot with a button id and return a string of buttonID
+         */
+        char[][] board = boardObj.getBoard();
+
+        int x = 0,y = 0;
+
+        if(isMaxPlayer)
+        {
+            int score = (int)Double.NEGATIVE_INFINITY;
+
+            for(int i = 0; i < boardObj.getBoardSize(); i++)
+            {
+                for(int j = 0; j < boardObj.getBoardSize(); j++)
+                {
+                    if(board[i][j] == '-')
+                    {
+                        board[i][j] = currentPlayer;
+//                        printBoard(board);
+                        int scoretemp = minimax(board, nextPlayer(currentPlayer), false);
+                        board[i][j] = '-';
+
+                        if(scoretemp > score)
+                        {
+                            score = scoretemp;
+                            x = i;
+                            y = j;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            int score = (int)Double.POSITIVE_INFINITY;
+
+            for(int i = 0; i < boardObj.getBoardSize(); i++)
+            {
+                for(int j = 0; j < boardObj.getBoardSize(); j++)
+                {
+                    if(board[i][j] == '-')
+                    {
+                        board[i][j] = currentPlayer;
+//                        printBoard(board);
+                        int scoretemp = minimax(board, nextPlayer(currentPlayer), true);
+                        board[i][j] = '-';
+
+                        if(scoretemp < score)
+                        {
+                            score = scoretemp;
+                            x = i;
+                            y = j;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Return the located spot on the board and return the button id
+
+        String buttonID = "button_";
+
+        if( x == 0 )
+            buttonID = buttonID + "top";
+        else if ( x == 1)
+            buttonID = buttonID + "mid";
+        else
+            buttonID = buttonID + "bot";
+
+        if (y == 0)
+            buttonID += "Left";
+        else if(y == 1)
+            buttonID += "Mid";
+        else
+            buttonID += "Right";
+
+        return buttonID;
     }
 
-    public int minimax(char[][] board, char currentPlayer, Node node, boolean isMaxPlayer)
+    public int minimax(char[][] board, char currentPlayer, boolean isMaxPlayer)
     {
         // if board is in terminal state
         // return static evaluation of position
-
+        // either +100 for X, -100 for O, or 0 for tie
         int score = evaluateBoard(board, currentPlayer);
-
+        if(score == -100 || score == 100)
+            return score;
 
         // If it's the maximizing player's turn (X),
         // loop through each child or move from that current position
         // and make the recursive call.
-
-
         if (isMaxPlayer)
         {
             // Worst possible case for X
             int max = (int)Double.NEGATIVE_INFINITY;
 
-            for (Node child: node.getNodes())
+            for(int i = 0; i < board.length; i++)
             {
-                int bestMove = minimax(board, currentPlayer, child, false);
-
-                if (bestMove > max)
+                for(int j = 0; j < board.length; j++)
                 {
-                    max = bestMove;
+                    if(board[i][j] == '-')
+                    {
+                        board[i][j] = currentPlayer;
+//                        printBoard(board);
+                        int bestMove = minimax(board, nextPlayer(currentPlayer), false);
+                        board[i][j] = '-';
+                        if (bestMove > max)
+                        {
+                            max = bestMove;
+                        }
+                    }
                 }
             }
 
@@ -54,13 +146,20 @@ public class Minimax implements BoardEvaluator {
             // Worst possible case for O
             int min = (int)Double.POSITIVE_INFINITY;
 
-            for (Node child: node.getNodes())
+            for(int i = 0; i < board.length; i++)
             {
-                int temp = minimax(board, currentPlayer, child, false);
-
-                if (temp < min)
+                for(int j = 0; j < board.length; j++)
                 {
-                    min = temp;
+                    if (board[i][j] == '-')
+                    {
+                        board[i][j] = currentPlayer;
+//                        printBoard(board);
+                        int temp = minimax(board, nextPlayer(currentPlayer), true);
+                        board[i][j] = '-';
+                        if (temp < min) {
+                            min = temp;
+                        }
+                    }
                 }
             }
 
@@ -68,13 +167,18 @@ public class Minimax implements BoardEvaluator {
         }
     }
 
-
+    /**
+     * Determines whether a player has won on the current board
+     * @param board the character board
+     * @param currentPlayer the character of the current player (i.e. 'X' or 'O')
+     * @return +100 if maximizer wins, -100 if minimizer wins, 0 if its a tie or nothing
+     */
     @Override
     public int evaluateBoard(char[][] board, char currentPlayer)
     {
         // Check row winner
 
-        for (int row = 0; row < 3; row++)
+        for (int row = 0; row < board.length; row++)
         {
             if (currentPlayer == 'X')
             {
@@ -96,7 +200,7 @@ public class Minimax implements BoardEvaluator {
 
         // Check column winner
 
-        for (int col = 0; col < 3; col++)
+        for (int col = 0; col < board.length; col++)
         {
             if (currentPlayer == 'X')
             {
@@ -157,5 +261,37 @@ public class Minimax implements BoardEvaluator {
         // If none of the above cases occur, then it's a tie, so return a score of 0
 
         return 0;
+    }
+
+    /**
+     * Return the opposite player character
+     * @param currentPlayer the character of the current player (i.e. 'X' or 'O')
+     * @return the character of the next assumed player
+     */
+    private char nextPlayer(char currentPlayer)
+    {
+        if(currentPlayer == 'X')
+            return 'O';
+        else
+            return 'X';
+    }
+
+    /**
+     * Print the board to the console
+     * @param board the character board
+     */
+    private void printBoard(char[][] board)
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            System.out.print("|");
+            for(int j = 0; j < 3; j++)
+            {
+                System.out.print(board[i][j] + "|");
+            }
+            System.out.println();
+        }
+
+        System.out.println();
     }
 }
