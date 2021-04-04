@@ -3,28 +3,22 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sample.AI.Minimax;
-import sample.Spot;
 
 import java.io.IOException;
-import java.util.HashMap;
+
+import static java.lang.Thread.sleep;
 
 
-public class Controller2 {
+public class Controller1 {
 
     Board board = new Board(3, 3);
 
@@ -37,6 +31,8 @@ public class Controller2 {
     private boolean winStatus = false;
 
     private int count = 0;
+
+    private static Minimax ai = new Minimax();
 
     @FXML
     private Button button_topLeft;
@@ -82,8 +78,10 @@ public class Controller2 {
     @FXML
     private ImageView imageView_player2;
 
+
     public void initializeAfterLoad()
     {
+
         if(startingPlayer == 'X')
         {
             label_player1.setText("x");
@@ -101,7 +99,7 @@ public class Controller2 {
      * @param event the button event
      */
     @FXML
-    void buttonClicked(ActionEvent event) {
+    void buttonClicked(ActionEvent event) throws InterruptedException {
 
         String id = ((Button)(event.getSource())).getId();
         System.out.println(id);
@@ -109,6 +107,16 @@ public class Controller2 {
 
         // play a turn
         play(currentPlayer, id);
+
+        if(!winStatus) {
+            String buttonID = ai.findBestMove(board, currentPlayer, false);
+            System.out.println(buttonID);
+            System.out.println(currentPlayer + " just played a turn.");
+
+            play(currentPlayer, buttonID);
+
+
+        }
 
     }
 
@@ -153,7 +161,8 @@ public class Controller2 {
         board.resetBoard();
 
         // reset current player image icon
-        switchPlayerIconImages();
+        imageView_player1.setVisible(true);
+        imageView_player2.setVisible(false);
 
         winStatus = false;
 
@@ -181,7 +190,7 @@ public class Controller2 {
 
         // show a popup that says are you sure you would like to go back to main menu and discontinue this game?
 
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Main.class.getResource("Main.css").toExternalForm());
@@ -197,15 +206,18 @@ public class Controller2 {
 
     }
 
+
+
     /**
      * Plays a turn and sets a move on the board and goes to next player
      * @param XO the current player character as in 'X' or 'O'
      * @param id the id of the slot on the board (i.e. "button_topLeft)
      */
+
     @FXML
-    private void play(char XO, String id)
-    {
+    private void play(char XO, String id) throws InterruptedException {
         Button button = findButton(id);
+
 
         if(XO == 'X')
         {
@@ -239,6 +251,7 @@ public class Controller2 {
         count++;
 
         checkWinner();
+
     }
 
     private void switchPlayerIconImages()
@@ -249,7 +262,6 @@ public class Controller2 {
         }
         else
         {
-
             imageView_player1.setVisible(true);
             imageView_player2.setVisible(false);
         }
