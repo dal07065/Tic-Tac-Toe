@@ -6,24 +6,27 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import sample.AI.Minimax;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
+import java.util.Optional;
 
-import static java.lang.Thread.sleep;
 
-
-public class ControllerOffline1 {
+public class ControllerLan implements Runnable{
 
     Board board = new Board(3, 3);
 
+    private char thisPlayer;
     private static char currentPlayer;
-    private static char startingPlayer;
 
     private int player1score = 0;
     private int player2score = 0;
@@ -32,7 +35,11 @@ public class ControllerOffline1 {
 
     private int count = 0;
 
-    private static Minimax ai = new Minimax();
+    private Socket socket;
+    private DataInputStream inputStream;
+    private DataOutputStream outputStream;
+
+    private boolean playerTurn = true;
 
     @FXML
     private Button button_topLeft;
@@ -78,20 +85,42 @@ public class ControllerOffline1 {
     @FXML
     private ImageView imageView_player2;
 
+    public void setSocket(Socket c) throws IOException {
+        this.socket = c;
+        this.inputStream = new DataInputStream(c.getInputStream());
+        this.outputStream = new DataOutputStream(c.getOutputStream());
+    }
 
-    public void initializeAfterLoad()
-    {
-
-        if(startingPlayer == 'X')
+    public void initializeAfterLoad() throws IOException {
+        if(thisPlayer == 'X')
         {
             label_player1.setText("x");
             label_player2.setText("o");
+
+            // Player X goes first
         }
         else
         {
             label_player1.setText("o");
             label_player2.setText("x");
+            switchPlayerIconImages();
+            // Player O goes second
+            // - wait for player X ( all button.setMouseTransparent(false) )
+
+            listenForNextMove();
+
         }
+    }
+
+    void disableAllButtons()
+    {
+        for(Node slot: gridPane.getChildren())
+            slot.setMouseTransparent(true);
+    }
+    void enableAllButtons()
+    {
+        for(Node slot: gridPane.getChildren())
+            slot.setMouseTransparent(false);
     }
 
     /**
@@ -99,7 +128,7 @@ public class ControllerOffline1 {
      * @param event the button event
      */
     @FXML
-    void buttonClicked(ActionEvent event) throws InterruptedException {
+    void buttonClicked(ActionEvent event) throws IOException {
 
         String id = ((Button)(event.getSource())).getId();
         System.out.println(id);
@@ -108,16 +137,88 @@ public class ControllerOffline1 {
         // play a turn
         play(currentPlayer, id);
 
-        if(!winStatus) {
-            String buttonID = ai.findBestMove(board, currentPlayer, false);
-            System.out.println(buttonID);
-            System.out.println(currentPlayer + " just played a turn.");
+        outputStream.writeInt(findNumberFromID(id));
 
-            play(currentPlayer, buttonID);
+        if(checkWinner())
+            outputStream.writeInt(0);
+        else
+            listenForNextMove();
+
+    }
+
+    private void listenForNextMove() throws IOException {
+
+        int move = inputStream.readInt();
+
+        System.out.println(currentPlayer + " just played a turn.");
+        play(currentPlayer, findIDFromNumber(move));
+
+        if(checkWinner())
+            outputStream.writeInt(0);
+    }
 
 
-        }
+    private String findIDFromNumber(int move) {
 
+        if(move == 7)
+            return("button_topLeft");
+
+        if(move == 8)
+            return("button_topMid");
+
+        if(move == 9)
+            return("button_topRight");
+
+        if(move == 4)
+            return("button_midLeft");
+
+        if(move == 5)
+            return("button_midMid");
+
+        if(move == 6)
+            return("button_midRight");
+
+        if(move == 1)
+            return("button_botLeft");
+
+        if(move == 2)
+            return("button_botMid");
+
+        if(move == 3)
+            return("button_botRight");
+
+        return null;
+    }
+
+    private int findNumberFromID(String id) {
+        if(id.equalsIgnoreCase("button_topLeft"))
+            return(7);
+
+        if(id.equalsIgnoreCase("button_topMid"))
+            return(8);
+
+        if(id.equalsIgnoreCase("button_topRight"))
+            return(9);
+
+        if(id.equalsIgnoreCase("button_midLeft"))
+            return(4);
+
+        if(id.equalsIgnoreCase("button_midMid"))
+            return(5);
+
+        if(id.equalsIgnoreCase("button_midRight"))
+            return(6);
+
+        if(id.equalsIgnoreCase("button_botLeft"))
+            return(1);
+
+        if(id.equalsIgnoreCase("button_botMid"))
+            return(2);
+
+        if(id.equalsIgnoreCase("button_botRight"))
+            return(3);
+
+        return 0;
     }
 
     /**
@@ -125,46 +226,48 @@ public class ControllerOffline1 {
      * @param actionEvent the button event
      */
     @FXML
-    public void resetClicked(ActionEvent actionEvent) {
+    public void resetClicked(ActionEvent actionEvent) throws IOException {
 
-        button_topLeft.setStyle("-fx-background-color: none;");
-        button_topMid.setStyle("-fx-background-color: none;");
-        button_topRight.setStyle("-fx-background-color: none;");
-        button_midLeft.setStyle("-fx-background-color: none;");
-        button_midMid.setStyle("-fx-background-color: none;");
-        button_midRight.setStyle("-fx-background-color: none;");
-        button_botLeft.setStyle("-fx-background-color: none;");
-        button_botMid.setStyle("-fx-background-color: none;");
-        button_botRight.setStyle("-fx-background-color: none;");
+        // ask the other player to reset?
 
-        button_topLeft.setMouseTransparent(false);
-        button_topMid.setMouseTransparent(false);
-        button_topRight.setMouseTransparent(false);
-        button_midLeft.setMouseTransparent(false);
-        button_midMid.setMouseTransparent(false);
-        button_midRight.setMouseTransparent(false);
-        button_botLeft.setMouseTransparent(false);
-        button_botMid.setMouseTransparent(false);
-        button_botRight.setMouseTransparent(false);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("Look, a Confirmation Dialog");
+        alert.setContentText("Are you ok with this?");
 
-        currentPlayer = startingPlayer;
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            for(Node slot: gridPane.getChildren())
+            {
+                slot.setStyle("-fx-background-color: none;");
+                slot.setMouseTransparent(false);
+            }
 
-        count = 0;
+            currentPlayer = 'X';
 
-        // reset "winner!" and small viking head image back to being transparent
-        label_winner1.setText("");
-        label_winner2.setText("");
-        imageView_1.setVisible(false);
-        imageView_2.setVisible(false);
+            count = 0;
 
-        // reset the internal board to all '-' (empty)
-        board.resetBoard();
+            // reset "winner!" and small viking head image back to being transparent
+            label_winner1.setText("");
+            label_winner2.setText("");
+            imageView_1.setVisible(false);
+            imageView_2.setVisible(false);
 
-        // reset current player image icon
-        imageView_player1.setVisible(true);
-        imageView_player2.setVisible(false);
+            // reset the internal board to all '-' (empty)
+            board.resetBoard();
 
-        winStatus = false;
+            // reset current player image icon
+            switchPlayerIconImages();
+
+            winStatus = false;
+
+            initializeAfterLoad();
+            // ... user chose OK
+        } else {
+            // ... user chose CANCEL or closed the dialog
+        }
+
+
 
     }
 
@@ -193,7 +296,7 @@ public class ControllerOffline1 {
         Parent root = FXMLLoader.load(getClass().getResource("design/main.fxml"));
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Main.class.getResource("Main.css").toExternalForm());
+        scene.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
 
         Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         currentStage.setTitle("Tic Tac Toe");
@@ -202,22 +305,18 @@ public class ControllerOffline1 {
         currentStage.setResizable(false);
         currentStage.show();
 
-
+        socket.close();
 
     }
-
-
 
     /**
      * Plays a turn and sets a move on the board and goes to next player
      * @param XO the current player character as in 'X' or 'O'
      * @param id the id of the slot on the board (i.e. "button_topLeft)
      */
-
     @FXML
-    private void play(char XO, String id) throws InterruptedException {
+    private void play(char XO, String id) throws IOException {
         Button button = findButton(id);
-
 
         if(XO == 'X')
         {
@@ -227,7 +326,7 @@ public class ControllerOffline1 {
 
             button.setMouseTransparent(true);
 
-            board.setMove(id, currentPlayer);
+            board.setMove(id, XO);
 
             currentPlayer = 'O';
 
@@ -249,9 +348,6 @@ public class ControllerOffline1 {
         switchPlayerIconImages();
 
         count++;
-
-        checkWinner();
-
     }
 
     private void switchPlayerIconImages()
@@ -262,6 +358,7 @@ public class ControllerOffline1 {
         }
         else
         {
+
             imageView_player1.setVisible(true);
             imageView_player2.setVisible(false);
         }
@@ -286,45 +383,28 @@ public class ControllerOffline1 {
      * Checks the board if anyone won and if so, determine who is the winner
      *
      */
-    private void checkWinner()
-    {
+    private boolean checkWinner() throws IOException {
         char winner = board.boardStatus();
 
         if(winner != '-')
         {
             System.out.println("The winner is : " + winner);
 
-            if(winner == 'X')
+            if(winner == thisPlayer)
             {
-                if(startingPlayer == 'X')
-                {
-                    showWinner1();
-                }
-
-                if(startingPlayer == 'O')
-                {
-                    showWinner2();
-                }
+                showWinner1();
             }
-            else if(winner == 'O')
+            else
             {
-                if(startingPlayer == 'O')
-                {
-                    showWinner1();
-                }
-
-                if(startingPlayer == 'X')
-                {
-                    showWinner2();
-                }
+                showWinner2();
             }
 
             // Disable all slots on the board. Game is over mate.
-            for(Node slot: gridPane.getChildren())
-                slot.setMouseTransparent(true);
+            disableAllButtons();
 
             winStatus = true;
         }
+        return winStatus;
     }
 
     //Program will show that player 1 has won the round
@@ -345,6 +425,10 @@ public class ControllerOffline1 {
         label_player2score.setText("" + player2score);
     }
 
+    public void setThisPlayer(char player) {
+        this.thisPlayer = player;
+    }
+
     //Sets up and tells program who the current player is
     public void setCurrentPlayer(char player)
     {
@@ -354,7 +438,13 @@ public class ControllerOffline1 {
     //Sets up and tells program who player 1 is
     public void setStartingPlayer(char startPlayer)
     {
-        this.startingPlayer = startPlayer;
+//        this.startingPlayer = startPlayer;
+    }
+
+
+    @Override
+    public void run() {
+
     }
 
 

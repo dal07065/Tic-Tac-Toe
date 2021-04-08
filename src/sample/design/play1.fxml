@@ -5,7 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="446.0" prefWidth="639.0" stylesheets="@Play.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller1">
+<AnchorPane prefHeight="446.0" prefWidth="639.0" stylesheets="@Play.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ControllerOffline1">
    <children>
       <HBox layoutX="57.0" layoutY="114.0" spacing="20.0">
          <children>
@@ -19,7 +19,7 @@
                      </VBox.margin></Label>
                   <ImageView fx:id="imageView_1" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" visible="false">
                      <image>
-                        <Image url="@resources/win_viking.png" />
+                        <Image url="@../resources/win_viking.png" />
                      </image>
                   </ImageView>
                </children>
@@ -63,7 +63,7 @@
                      </VBox.margin></Label>
                   <ImageView fx:id="imageView_2" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" visible="false">
                      <image>
-                        <Image url="@resources/win_viking.png" />
+                        <Image url="@../resources/win_viking.png" />
                      </image>
                   </ImageView>
                </children>
@@ -80,7 +80,7 @@
          <children>
             <ImageView fx:id="imageView_player1" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@resources/win_viking.png" />
+                  <Image url="@../resources/win_viking.png" />
                </image>
             </ImageView>
             <Label fx:id="label_scoreTitle1" text="player" />
@@ -88,7 +88,7 @@
             <Label fx:id="label_scoreTitle3" text="computer" />
             <ImageView fx:id="imageView_player2" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" visible="false">
                <image>
-                  <Image url="@resources/win_viking.png" />
+                  <Image url="@../resources/win_viking.png" />
                </image>
             </ImageView>
          </children>

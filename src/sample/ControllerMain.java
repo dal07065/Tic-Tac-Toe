@@ -6,9 +6,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.net.Socket;
 
 public class ControllerMain {
 
@@ -16,155 +19,87 @@ public class ControllerMain {
      * playOption: 1 for 1 player and 2 for 2 player
      */
     private static int playOption;
-//    @FXML
-//    void switch1PlayScene(ActionEvent event) throws IOException {
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("play1.fxml"));
-//        Parent root = loader.load();
-//
-//        Scene scenePlay = new Scene(root, 634, 446);
-//        scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
-//
-//        Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-//
-//        currentStage.setScene(scenePlay);
-//        currentStage.sizeToScene();
-//        currentStage.show();
-//
-//        // This allows to perform any actions as soon as the scene is loaded
-//        // (For example, have the AI make the first move before the player does)
-//        Controller1 playController = loader.getController();
-//        playController.initializeAfterLoad();
-//    }
-//
-//    /**
-//     * Switches from Main scene to Play scene
-//     * @param event
-//     * @throws IOException
-//     */
-//    @FXML
-//    void switch2PlayScene(ActionEvent event) throws IOException {
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("play2.fxml"));
-//        Parent root = loader.load();
-//
-//        Scene scenePlay = new Scene(root, 634, 446);
-//        scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
-//
-//        Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-//
-//        currentStage.setScene(scenePlay);
-//        currentStage.sizeToScene();
-//        currentStage.show();
-//
-//        // This allows to perform any actions as soon as the scene is loaded
-//        // (For example, have the AI make the first move before the player does)
-//        Controller2 playController = loader.getController();
-//        playController.initializeAfterLoad();
-//
-//    }
 
-
-    //If 2 Player button is selected, switch to scene that asks for the player who wants to start first
     @FXML
-    void switchSelectRole(ActionEvent event) throws IOException
-    {
-        Parent root = FXMLLoader.load(getClass().getResource("selectRole.fxml"));
+    private TextField textField_code;
+
+    @FXML
+    void switchLan(ActionEvent event) throws IOException {
+        // open a scene for "Enter code: "
+
+        Parent root = FXMLLoader.load(getClass().getResource("design/lan.fxml"));
         Scene scenePlay = new Scene(root);
-        scenePlay.getStylesheets().add(Main.class.getResource("Main.css").toExternalForm());
+        scenePlay.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
 
         Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
 
         currentStage.setScene(scenePlay);
         currentStage.sizeToScene();
         currentStage.show();
-
-        if(((Node) event.getSource()).getId().equalsIgnoreCase("button_1player"))
-            playOption = 1;
-        else
-            playOption = 2;
     }
 
-
-    /**
-     * If player clicks player X button when program asks which player wants to start
-     * first, then scene will switch to scene showing player X is player 1 and
-     * player O is player 2
-     * @param event
-     * @throws IOException
-     */
     @FXML
-    void switchPlayScene(ActionEvent event) throws IOException {
+    void switchOffline(ActionEvent event) throws IOException {
+        // open a scene with 1 player or 2 player button options
 
-        FXMLLoader loader;
-        if(playOption == 1)
-            loader = new FXMLLoader(getClass().getResource("play1.fxml"));
-        else
-            loader = new FXMLLoader(getClass().getResource("play2.fxml"));
-
-        Parent root = loader.load();
-
-        Scene scenePlay = new Scene(root, 634, 446);
-        scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
+        Parent root = FXMLLoader.load(getClass().getResource("design/offline.fxml"));
+        Scene scenePlay = new Scene(root);
+        scenePlay.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
 
         Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
 
         currentStage.setScene(scenePlay);
         currentStage.sizeToScene();
         currentStage.show();
-
-        if(playOption == 1)
-        {
-            Controller1 controller = loader.getController();
-            if(((Node) event.getSource()).getId().equalsIgnoreCase("button_O"))
-            {
-                controller.setCurrentPlayer('O');
-                controller.setStartingPlayer('O');
-            }
-            else
-            {
-                controller.setCurrentPlayer('X');
-                controller.setStartingPlayer('X');
-            }
-            controller.initializeAfterLoad();
-        }
-        else
-        {
-            Controller2 controller = loader.getController();
-            if(((Node) event.getSource()).getId().equalsIgnoreCase("button_O"))
-            {
-                controller.setCurrentPlayer('O');
-                controller.setStartingPlayer('O');
-            }
-            else
-            {
-                controller.setCurrentPlayer('X');
-                controller.setStartingPlayer('X');
-            }
-            controller.initializeAfterLoad();
-        }
-
-
     }
 
-//    /* If user clicks player O button when program asks which player wants to start
-//       first, then scene will switch to scene showing player O is player 1 and
-//       player X is player 2
-//    */
-//    @FXML
-//    void switch2PlaySceneO(ActionEvent event) throws IOException {
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("play2.fxml"));
-//        Parent root = loader.load();
-//
-//        Scene scenePlay = new Scene(root, 634, 446);
-//        scenePlay.getStylesheets().add(Main.class.getResource("Play.css").toExternalForm());
-//
-//        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-//
-//        currentStage.setScene(scenePlay);
-//        currentStage.sizeToScene();
-//        currentStage.show();
-//
-//        Controller2 controller = loader.getController();
-//        controller.setCurrentPlayer('O');
-//        controller.setStartingPlayer('O');
-//    }
+    public void enterCode(ActionEvent actionEvent) {
+
+        try
+        {
+            // Create a socket to connect to the server
+            Socket socket = new Socket("localhost", Integer.parseInt(textField_code.getText()));
+
+//            Socket socket = new Socket("192.168.1.68", Integer.parseInt(textField_code.getText()));
+//            Socket socket = new Socket("130.254.204.36", 8000);
+//            Socket socket = new Socket("drake.Armstrong.edu", 8000);
+//            Create an input stream to receive data from the server
+            DataInputStream inputStream = new DataInputStream(socket.getInputStream());            // Create an output stream to send data to the server
+
+            int player = inputStream.readInt();
+
+            char currentPlayer = 'P';
+
+            if(player == 1)
+                currentPlayer = 'X';
+            else if (player == 2)
+                currentPlayer = 'O';
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("design/playLan.fxml"));
+
+            Parent root = loader.load();
+
+            Scene scenePlay = new Scene(root, 634, 446);
+            scenePlay.getStylesheets().add(Main.class.getResource("design/Play.css").toExternalForm());
+
+            Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            ControllerLan controller = loader.getController();
+            controller.setSocket(socket);
+
+            currentStage.setScene(scenePlay);
+            currentStage.sizeToScene();
+            currentStage.show();
+
+            controller.setThisPlayer(currentPlayer);
+            controller.setCurrentPlayer('X');
+
+            controller.initializeAfterLoad();
+
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 }

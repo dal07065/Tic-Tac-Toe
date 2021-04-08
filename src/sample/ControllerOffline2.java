@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 
-public class Controller2 {
+public class ControllerOffline2 {
 
     Board board = new Board(3, 3);
 
@@ -172,7 +172,7 @@ public class Controller2 {
 
         // show a popup that says are you sure you would like to go back to main menu and discontinue this game?
 
-        Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("design/main.fxml"));
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Main.class.getResource("Main.css").toExternalForm());
