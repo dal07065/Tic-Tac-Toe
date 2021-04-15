@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -19,6 +20,8 @@ public class ControllerMain {
      * playOption: 1 for 1 player and 2 for 2 player
      */
     private static int playOption;
+
+    private Socket socket;
 
     @FXML
     private TextField textField_code;
@@ -53,12 +56,21 @@ public class ControllerMain {
         currentStage.show();
     }
 
+    public void setSocket(Socket socket)
+    {
+        this.socket = socket;
+    }
+
     public void enterCode(ActionEvent actionEvent) {
 
         try
         {
             // Create a socket to connect to the server
-            Socket socket = new Socket("localhost", Integer.parseInt(textField_code.getText()));
+            int password = Integer.parseInt(textField_code.getText());
+
+            DataOutputStream oStream = new DataOutputStream(socket.getOutputStream());
+
+            oStream.writeInt(password);
 
 //            Socket socket = new Socket("192.168.1.68", Integer.parseInt(textField_code.getText()));
 //            Socket socket = new Socket("130.254.204.36", 8000);
