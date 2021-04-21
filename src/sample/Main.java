@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 
 import java.io.DataInputStream;
 import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.net.Socket;
 
 public class Main extends Application {
@@ -15,10 +16,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("design/main.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("design/login.fxml"));
 
         Parent root = loader.load();
-        primaryStage.setTitle("Tic Tac Toe");
+        primaryStage.setTitle("Tic Tac Toe : Log In");
 
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
@@ -29,9 +30,13 @@ public class Main extends Application {
         ControllerMain controllerMain = loader.getController();
 
         // Create a socket to connect to the server
-//        Socket socket = new Socket("localhost", 8000);
+        Socket socket = new Socket("localhost", 8000);
 
-//        controllerMain.setSocket(socket);
+        User user = new User();
+        user.setSocket(socket);
+
+
+        controllerMain.setUser(user);
 
     }
 

@@ -26,6 +26,8 @@ class ClientConnection implements Runnable {
         outputStream1.writeInt(1);
         outputStream2.writeInt(2);
 
+
+
         Thread clientThread = new Thread(this);
         clientThread.start();
     }
