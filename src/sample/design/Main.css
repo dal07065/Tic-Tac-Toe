@@ -1,6 +1,6 @@
 @font-face {
     /* font-family: "CosmosLogic"; a name to be used later*/
-    src: url("resources/Mario-Kart-DS.ttf"); /*URL to font*/
+    src: url("../resources/Mario-Kart-DS.ttf"); /*URL to font*/
 }
 
 .root {
@@ -16,6 +16,13 @@
     /*
     -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
     */
+}
+
+.label
+{
+    -fx-font-family: 'Mario Kart DS';
+    -fx-font-size: 20px;
+    -fx-text-fill: #000000;
 }
 
 .button {
