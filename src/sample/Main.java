@@ -5,11 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.net.Socket;
+import sample.server.AppData;
 
 public class Main extends Application {
 
@@ -27,16 +23,7 @@ public class Main extends Application {
         scene.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
         primaryStage.show();
 
-        ControllerMain controllerMain = loader.getController();
-
-        // Create a socket to connect to the server
-        Socket socket = new Socket("localhost", 8000);
-
-        User user = new User();
-        user.setSocket(socket);
-
-
-        controllerMain.setUser(user);
+        AppData.connectToServer();
 
     }
 

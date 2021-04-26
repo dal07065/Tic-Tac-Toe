@@ -13,11 +13,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import sample.server.AppData;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.Optional;
 
 
@@ -34,10 +32,6 @@ public class ControllerLan implements Runnable{
     private boolean winStatus = false;
 
     private int count = 0;
-
-    private Socket socket;
-    private DataInputStream inputStream;
-    private DataOutputStream outputStream;
 
     private boolean playerTurn = true;
 
@@ -85,12 +79,6 @@ public class ControllerLan implements Runnable{
     @FXML
     private ImageView imageView_player2;
 
-    public void setSocket(Socket c) throws IOException {
-        this.socket = c;
-        this.inputStream = new DataInputStream(c.getInputStream());
-        this.outputStream = new DataOutputStream(c.getOutputStream());
-    }
-
     public void initializeAfterLoad() throws IOException {
         if(thisPlayer == 'X')
         {
@@ -137,10 +125,10 @@ public class ControllerLan implements Runnable{
         // play a turn
         play(currentPlayer, id);
 
-        outputStream.writeInt(findNumberFromID(id));
+        AppData.connection.writeInt(findNumberFromID(id));
 
         if(checkWinner())
-            outputStream.writeInt(0);
+            AppData.connection.writeInt(0);
         else
             listenForNextMove();
 
@@ -148,13 +136,13 @@ public class ControllerLan implements Runnable{
 
     private void listenForNextMove() throws IOException {
 
-        int move = inputStream.readInt();
+        int move = AppData.connection.readInt();
 
         System.out.println(currentPlayer + " just played a turn.");
         play(currentPlayer, findIDFromNumber(move));
 
         if(checkWinner())
-            outputStream.writeInt(0);
+            AppData.connection.writeInt(0);
     }
 
 
@@ -304,9 +292,6 @@ public class ControllerLan implements Runnable{
         currentStage.sizeToScene();
         currentStage.setResizable(false);
         currentStage.show();
-
-        socket.close();
-
     }
 
     /**

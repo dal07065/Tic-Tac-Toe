@@ -4,17 +4,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import sample.message.Message;
+import sample.server.AppData;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.util.Locale;
 
 public class ControllerProfile {
-
-    private User user;
 
     @FXML
     private Label label_userID;
@@ -32,18 +26,16 @@ public class ControllerProfile {
     @FXML
     private PasswordField passwordField_password;
 
-    public void setUser(User user)
+    public void initialize()
     {
-        this.user = user;
-
         updateUserUI();
     }
 
     private void updateUserUI()
     {
-        label_firstName.setText(user.getFirstName().toLowerCase());
-        label_lastName.setText(user.getLastName().toLowerCase());
-        label_userID.setText(user.getUserID().toLowerCase());
+        label_firstName.setText(AppData.user.getFirstName().toLowerCase());
+        label_lastName.setText(AppData.user.getLastName().toLowerCase());
+        label_userID.setText(AppData.user.getUserID().toLowerCase());
 
         textField_lastName.clear();
         textField_firstName.clear();
@@ -58,15 +50,9 @@ public class ControllerProfile {
         String password = passwordField_password.getText();
 
         // send msg to server using socket
-        DataOutputStream output = new DataOutputStream((user.getSocket()).getOutputStream());
+        String packet = "updateUser/" + AppData.user.getUserID() +"/"+password +"/"+ firstName +"/"+ lastName +"/";
 
-        String packet = "updateUser/" + user.getUserID() +"/"+ firstName +"/"+ lastName +"/"+ password +"/";
-
-        output.writeUTF(packet);
-
-        // retrieve back user information
-
-        user.update(new Message(packet));
+        AppData.updateUser(new Message(packet));
 
         // Notify the user that it has been successfully updated
 
