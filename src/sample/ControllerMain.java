@@ -12,13 +12,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.message.Message;
+import sample.server.AppData;
 
 import java.io.*;
-import java.net.Socket;
 
 public class ControllerMain {
-
-    private User user;
 
     /**
      * playOption: 1 for 1 player and 2 for 2 player
@@ -43,31 +41,19 @@ public class ControllerMain {
     @FXML
     void logToServer(ActionEvent actionEvent) throws Exception {
 
-        // send server a message
         String userID = textField_userID.getText();
         String password = passwordField_password.getText();
-        (user.getOutputStream()).writeUTF("signin/" + userID + "/" + password + "/");
 
-        // retrieve back user information
-
-        Message userProfile = new Message((user.getInputStream()).readUTF());
-
-        if(userProfile.getType().equals("error"))
+        if(!AppData.login(userID,password))
         {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(userProfile.get(0));
-            alert.setHeaderText(null);
-            alert.setContentText("Please Try Again.");
+            displayAlert("Wrong Log In Information", "Please Try Again");
 
-            alert.showAndWait();
 
             textField_userID.clear();
             passwordField_password.clear();
         }
         else
         {
-            user.set(userProfile);
-
             // load Main
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("design/main.fxml"));
@@ -83,9 +69,6 @@ public class ControllerMain {
             currentStage.setScene(scene);
             currentStage.setResizable(false);
             currentStage.show();
-
-            ControllerMain controllerMain = loader.getController();
-            controllerMain.setUser(user);
         }
     }
 
@@ -105,9 +88,6 @@ public class ControllerMain {
         newStage.setResizable(false);
         newStage.initModality(Modality.APPLICATION_MODAL);
         newStage.show();
-
-        ControllerCreateAccount controllerCreateAccount = loader.getController();
-        controllerCreateAccount.setUser(user);
 
     }
 
@@ -132,9 +112,8 @@ public class ControllerMain {
         newStage.initModality(Modality.APPLICATION_MODAL);
         newStage.show();
 
-        ControllerProfile controllerProfile = loader.getController();
-
-        controllerProfile.setUser(user);
+        ControllerProfile controller = loader.getController();
+        controller.initialize();
 
     }
 
@@ -168,16 +147,11 @@ public class ControllerMain {
         currentStage.show();
     }
 
-    public void setUser(User user)
-    {
-        this.user = user;
-    }
-
     public void logOut(ActionEvent actionEvent) throws IOException {
 
         // close current user socket
 
-        user.getSocket().close();
+        AppData.disconnectToServer();
 
         // Load Log in scene
 
@@ -196,22 +170,10 @@ public class ControllerMain {
 
         // Reset to new user, new socket
 
-        ControllerMain controllerMain = loader.getController();
-
-        User user = new User();
-        user.setSocket(new Socket("localhost", 8000));
-
-        controllerMain.setUser(user);
+        AppData.connectToServer();
     }
-//
-//    public void setSocket(Socket socket) throws IOException {
-//
-//        this.socket = socket;
-//        output = new DataOutputStream(socket.getOutputStream());
-//        input = new DataInputStream(socket.getInputStream());
-//    }
 
-    /*
+
     public void enterCode(ActionEvent event) {
 
         try
@@ -219,24 +181,18 @@ public class ControllerMain {
             // Create a socket to connect to the server
             int password = Integer.parseInt(textField_code.getText());
 
-            DataOutputStream oStream = new DataOutputStream(socket.getOutputStream());
+            Message msg = AppData.connectToGame(password);
 
-            oStream.writeInt(password);
+            if(msg.get(0).equals("occupied"))
+            {
+                displayAlert("Occupied Game", "The game is currently occupied. Please try again later.");
+                textField_code.clear();
+            }
 
 //            Socket socket = new Socket("192.168.1.68", Integer.parseInt(textField_code.getText()));
 //            Socket socket = new Socket("130.254.204.36", 8000);
 //            Socket socket = new Socket("drake.Armstrong.edu", 8000);
 //            Create an input stream to receive data from the server
-            DataInputStream inputStream = new DataInputStream(socket.getInputStream());            // Create an output stream to send data to the server
-
-            int player = inputStream.readInt();
-
-            char currentPlayer = 'P';
-
-            if(player == 1)
-                currentPlayer = 'X';
-            else if (player == 2)
-                currentPlayer = 'O';
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("design/playLan.fxml"));
 
@@ -248,25 +204,43 @@ public class ControllerMain {
             Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
 
             ControllerLan controller = loader.getController();
-            controller.setSocket(socket);
 
             currentStage.setScene(scenePlay);
             currentStage.sizeToScene();
             currentStage.show();
+
+            // wait for another player
+
+            int player = AppData.connection.readInt();
+
+            char currentPlayer = 'P';
+
+            if(player == 1)
+                currentPlayer = 'X';
+            else if (player == 2)
+                currentPlayer = 'O';
 
             controller.setThisPlayer(currentPlayer);
             controller.setCurrentPlayer('X');
 
             controller.initializeAfterLoad();
 
+
+
+
         }
-        catch (IOException ex)
+        catch (IOException | ClassNotFoundException ex)
         {
             ex.printStackTrace();
         }
     }
-
-     */
-
+    public void displayAlert(String Title, String Content)
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Title);
+        alert.setHeaderText(null);
+        alert.setContentText(Content);
+        alert.showAndWait();
+    }
 
 }

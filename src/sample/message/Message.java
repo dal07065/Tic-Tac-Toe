@@ -1,8 +1,9 @@
 package sample.message;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Message {
+public class Message implements Serializable {
 
     ArrayList<String> messages;
     String originalPacket;
