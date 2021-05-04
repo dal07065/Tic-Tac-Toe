@@ -1,5 +1,7 @@
 package sample;
 
+import message.ConnectGameReceivedMessage;
+import message.Packet;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,10 +13,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import sample.message.Message;
 import sample.server.AppData;
 
-import java.io.*;
+import java.io.IOException;
 
 public class ControllerMain {
 
@@ -181,51 +182,44 @@ public class ControllerMain {
             // Create a socket to connect to the server
             int password = Integer.parseInt(textField_code.getText());
 
-            Message msg = AppData.connectToGame(password);
+            ConnectGameReceivedMessage msg = (ConnectGameReceivedMessage) (AppData.connectToGame(password)).getMessage();
 
-            if(msg.get(0).equals("occupied"))
+            if(msg.getStatus().equals("occupied"))
             {
                 displayAlert("Occupied Game", "The game is currently occupied. Please try again later.");
                 textField_code.clear();
             }
+            else
+            {
 
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("design/playLan.fxml"));
+
+                Parent root = loader.load();
+
+                Scene scenePlay = new Scene(root, 634, 446);
+                scenePlay.getStylesheets().add(Main.class.getResource("design/Play.css").toExternalForm());
+
+                Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+                ControllerLan controller = loader.getController();
+
+                currentStage.setScene(scenePlay);
+                currentStage.sizeToScene();
+                currentStage.show();
+
+                // wait for another player
+
+                char currentPlayer = msg.getPlayer();
+
+                controller.setThisPlayer(currentPlayer);
+                controller.setCurrentPlayer('X');
+
+                controller.initializeAfterLoad();
+            }
 //            Socket socket = new Socket("192.168.1.68", Integer.parseInt(textField_code.getText()));
 //            Socket socket = new Socket("130.254.204.36", 8000);
 //            Socket socket = new Socket("drake.Armstrong.edu", 8000);
 //            Create an input stream to receive data from the server
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("design/playLan.fxml"));
-
-            Parent root = loader.load();
-
-            Scene scenePlay = new Scene(root, 634, 446);
-            scenePlay.getStylesheets().add(Main.class.getResource("design/Play.css").toExternalForm());
-
-            Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-
-            ControllerLan controller = loader.getController();
-
-            currentStage.setScene(scenePlay);
-            currentStage.sizeToScene();
-            currentStage.show();
-
-            // wait for another player
-
-            int player = AppData.connection.readInt();
-
-            char currentPlayer = 'P';
-
-            if(player == 1)
-                currentPlayer = 'X';
-            else if (player == 2)
-                currentPlayer = 'O';
-
-            controller.setThisPlayer(currentPlayer);
-            controller.setCurrentPlayer('X');
-
-            controller.initializeAfterLoad();
-
-
 
 
         }

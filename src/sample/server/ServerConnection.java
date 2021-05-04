@@ -1,6 +1,7 @@
 package sample.server;
 
-import sample.message.Message;
+import message.Message;
+import message.Packet;
 
 import java.io.*;
 import java.net.Socket;
@@ -31,9 +32,14 @@ public class ServerConnection implements Runnable{
         connectionThread.start();
     }
 
-    public Message sendMessage(Message msg) throws IOException, ClassNotFoundException {
-        os.writeObject(msg);
-        return (Message) is.readObject();
+    public void sendPacket(Packet packet) throws IOException, ClassNotFoundException {
+        os.writeObject(packet);
+    }
+
+    public Packet getPacket() throws IOException, ClassNotFoundException {
+        Packet packet = (Packet) is.readObject();
+
+        return packet;
     }
 
     public void disconnect() throws IOException {

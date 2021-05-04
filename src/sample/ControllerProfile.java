@@ -3,7 +3,9 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import sample.message.Message;
+import message.Message;
+import message.Packet;
+import message.UserInfoMessage;
 import sample.server.AppData;
 
 import java.io.IOException;
@@ -52,7 +54,7 @@ public class ControllerProfile {
         // send msg to server using socket
         String packet = "updateUser/" + AppData.user.getUserID() +"/"+password +"/"+ firstName +"/"+ lastName +"/";
 
-        AppData.updateUser(new Message(packet));
+        AppData.updateUser(new Packet("updateUser", new UserInfoMessage(AppData.user.getUserID(), password, firstName, lastName)));
 
         // Notify the user that it has been successfully updated
 

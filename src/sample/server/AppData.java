@@ -1,6 +1,6 @@
 package sample.server;
 
-import sample.message.Message;
+import message.*;
 
 import java.io.IOException;
 
@@ -23,28 +23,39 @@ public final class AppData {
     }
 
     public static boolean login(String userID, String password) throws IOException, ClassNotFoundException {
-        Message msg = connection.sendMessage(new Message("signin/"+userID +"/" + password +"/"));
-
-        if(msg == null)
+        connection.sendPacket(new Packet("signin", new LogInMessage(userID, password)));
+        Packet packet = connection.getPacket();
+        if(packet == null)
             return false;
         else {
-            user = new User(msg);
+            user = new User(packet);
             return true;
         }
     }
 
-    public static void createUser(Message msg) throws IOException, ClassNotFoundException {
-        connection.sendMessage(msg);
+    public static void createUser(Packet packet) throws IOException, ClassNotFoundException {
+        connection.sendPacket(packet);
     }
 
-    public static void updateUser(Message msg) throws IOException, ClassNotFoundException {
-        Message updatedUser = connection.sendMessage(msg);
+    public static void updateUser(Packet packet) throws IOException, ClassNotFoundException {
+        connection.sendPacket(packet);
+        Packet updatedUser = connection.getPacket();
         user.update(updatedUser);
     }
 
-    public static Message connectToGame(int password) throws IOException, ClassNotFoundException {
-        return connection.sendMessage(new Message("game/"+password+"/"));
+    public static Packet connectToGame(int password) throws IOException, ClassNotFoundException {
+        connection.sendPacket(new Packet("newGame", new ConnectGameMessage(password)));
+        return connection.getPacket();
     }
 
+    public static Packet makeGameMove(char currentPlayer, String moveID) throws IOException, ClassNotFoundException {
+        connection.sendPacket(new Packet("makeGameMove", new GameMoveMessage(moveID, currentPlayer)));
+        return connection.getPacket();
+    }
+
+    public static Packet waitForGameMove(char currentPlayer) throws IOException, ClassNotFoundException {
+        connection.sendPacket(new Packet("waitGameMove", new GameWaitMessage(currentPlayer)));
+        return connection.getPacket();
+    }
 
 }

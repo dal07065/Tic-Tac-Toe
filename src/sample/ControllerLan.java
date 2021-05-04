@@ -15,6 +15,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import sample.server.AppData;
 
+import message.*;
+
 import java.io.IOException;
 import java.util.Optional;
 
@@ -79,7 +81,7 @@ public class ControllerLan implements Runnable{
     @FXML
     private ImageView imageView_player2;
 
-    public void initializeAfterLoad() throws IOException {
+    public void initializeAfterLoad() throws IOException, ClassNotFoundException {
         if(thisPlayer == 'X')
         {
             label_player1.setText("x");
@@ -116,33 +118,40 @@ public class ControllerLan implements Runnable{
      * @param event the button event
      */
     @FXML
-    void buttonClicked(ActionEvent event) throws IOException {
+    void buttonClicked(ActionEvent event) throws IOException, ClassNotFoundException {
 
         String id = ((Button)(event.getSource())).getId();
+
+        GameResultMessage msg = (GameResultMessage) ((AppData.makeGameMove(currentPlayer, id)).getMessage());
+
         System.out.println(id);
         System.out.println(currentPlayer + " just played a turn.");
 
         // play a turn
         play(currentPlayer, id);
 
-        AppData.connection.writeInt(findNumberFromID(id));
-
-        if(checkWinner())
-            AppData.connection.writeInt(0);
+        if(msg.checkWinner() == 'X')
+            showWinner1();
+        else if(msg.checkWinner() == 'O')
+            showWinner2();
         else
             listenForNextMove();
 
     }
 
-    private void listenForNextMove() throws IOException {
+    private void listenForNextMove() throws IOException, ClassNotFoundException {
 
-        int move = AppData.connection.readInt();
+        disableAllButtons();
+
+        GameResultMessage msg = (GameResultMessage) (AppData.waitForGameMove(currentPlayer).getMessage());
 
         System.out.println(currentPlayer + " just played a turn.");
-        play(currentPlayer, findIDFromNumber(move));
+        play(currentPlayer, msg.getGameMove());
 
-        if(checkWinner())
-            AppData.connection.writeInt(0);
+        if(msg.checkWinner() == 'X')
+            showWinner1();
+        else if(msg.checkWinner() == 'O')
+            showWinner2();
     }
 
 
@@ -214,7 +223,7 @@ public class ControllerLan implements Runnable{
      * @param actionEvent the button event
      */
     @FXML
-    public void resetClicked(ActionEvent actionEvent) throws IOException {
+    public void resetClicked(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
 
         // ask the other player to reset?
 
@@ -300,7 +309,7 @@ public class ControllerLan implements Runnable{
      * @param id the id of the slot on the board (i.e. "button_topLeft)
      */
     @FXML
-    private void play(char XO, String id) throws IOException {
+    private void play(char XO, String id) throws IOException, ClassNotFoundException {
         Button button = findButton(id);
 
         if(XO == 'X')
@@ -311,7 +320,7 @@ public class ControllerLan implements Runnable{
 
             button.setMouseTransparent(true);
 
-            board.setMove(id, XO);
+//            board.setMove(id, XO);
 
             currentPlayer = 'O';
 
@@ -324,7 +333,7 @@ public class ControllerLan implements Runnable{
 
             button.setMouseTransparent(true);
 
-            board.setMove(id, currentPlayer);
+//            board.setMove(id, currentPlayer);
 
             currentPlayer = 'X';
 
@@ -364,34 +373,6 @@ public class ControllerLan implements Runnable{
         return null;
     }
 
-    /**
-     * Checks the board if anyone won and if so, determine who is the winner
-     *
-     */
-    private boolean checkWinner() throws IOException {
-        char winner = board.boardStatus();
-
-        if(winner != '-')
-        {
-            System.out.println("The winner is : " + winner);
-
-            if(winner == thisPlayer)
-            {
-                showWinner1();
-            }
-            else
-            {
-                showWinner2();
-            }
-
-            // Disable all slots on the board. Game is over mate.
-            disableAllButtons();
-
-            winStatus = true;
-        }
-        return winStatus;
-    }
-
     //Program will show that player 1 has won the round
     public void showWinner1()
     {
@@ -399,6 +380,8 @@ public class ControllerLan implements Runnable{
         imageView_1.setVisible(true);
         player1score++;
         label_player1score.setText("" + player1score);
+        disableAllButtons();
+        winStatus = true;
     }
 
     //Program will show that player 2 has won the round
@@ -408,6 +391,8 @@ public class ControllerLan implements Runnable{
         imageView_2.setVisible(true);
         player2score++;
         label_player2score.setText("" + player2score);
+        disableAllButtons();
+        winStatus = true;
     }
 
     public void setThisPlayer(char player) {

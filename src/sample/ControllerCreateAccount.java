@@ -7,7 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import sample.message.Message;
+import message.*;
 import sample.server.AppData;
 import sample.server.User;
 
@@ -31,9 +31,7 @@ public class ControllerCreateAccount {
     @FXML
     public void createAccount(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
 
-        String packet = "newUser/" + textField_userID.getText() + "/" + passwordField_password.getText() + "/" + textField_firstName.getText() + "/" + textField_lastName.getText() + "/";
-
-        AppData.createUser(new Message(packet));
+        AppData.createUser(new Packet("newUser", new UserInfoMessage(textField_userID.getText(), passwordField_password.getText(), textField_firstName.getText(), textField_lastName.getText())));
 
         Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         currentStage.close();

@@ -1,6 +1,8 @@
 package sample.server;
 
-import sample.message.Message;
+import message.Message;
+import message.Packet;
+import message.UserInfoMessage;
 
 public class User {
 
@@ -20,18 +22,16 @@ public class User {
         this.lastName = lastName;
     }
 
-    public User(Message userInfo) {
+    public User(Packet userInfo) {
         //   ID | PWD | first | last
         // "1234/12345|Derrick|Hendrickson"
 
         set(userInfo);
     }
 
-    public void set(Message userInfo) {
-        this.userID = userInfo.get(0);
-        this.password = userInfo.get(1);
-        this.firstName = userInfo.get(2);
-        this.lastName = userInfo.get(3);
+    public void set(Packet userInfoPacket) {
+        UserInfoMessage userInfo = (UserInfoMessage) userInfoPacket.getMessage();
+        set(userInfo.getUserID(), userInfo.getPassword(), userInfo.getFirstName(), userInfo.getLastName());
     }
 
     public void set(String userID, String password, String firstName, String lastName) {
@@ -41,13 +41,14 @@ public class User {
         this.lastName = lastName;
     }
 
-    public void update(Message userInfo) {
-        if (!userInfo.get(1).equals(""))
-            this.password = userInfo.get(1);
-        if (!userInfo.get(2).equals(""))
-            this.firstName = userInfo.get(2);
-        if (!userInfo.get(3).equals(""))
-            this.lastName = userInfo.get(3);
+    public void update(Packet userInfoPacket) {
+        UserInfoMessage userInfo = (UserInfoMessage) userInfoPacket.getMessage();
+        if (!userInfo.getPassword().equals(""))
+            this.password = userInfo.getPassword();
+        if (!userInfo.getFirstName().equals(""))
+            this.firstName = userInfo.getFirstName();
+        if (!userInfo.getLastName().equals(""))
+            this.lastName = userInfo.getLastName();
 
     }
 
