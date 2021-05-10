@@ -47,14 +47,12 @@ public class ControllerProfile {
 
     public void updateProfile(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
 
+        String userID = AppData.user.getUserID();
         String firstName = textField_firstName.getText();
         String lastName = textField_lastName.getText();
         String password = passwordField_password.getText();
 
-        // send msg to server using socket
-        String packet = "updateUser/" + AppData.user.getUserID() +"/"+password +"/"+ firstName +"/"+ lastName +"/";
-
-        AppData.updateUser(new Packet("updateUser", new UserInfoMessage(AppData.user.getUserID(), password, firstName, lastName)));
+        AppData.updateUser(userID, password, firstName, lastName);
 
         // Notify the user that it has been successfully updated
 

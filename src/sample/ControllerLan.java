@@ -130,28 +130,31 @@ public class ControllerLan implements Runnable{
         // play a turn
         play(currentPlayer, id);
 
-        if(msg.checkWinner() == 'X')
-            showWinner1();
-        else if(msg.checkWinner() == 'O')
-            showWinner2();
-        else
+        if(msg.checkWinner() == '-')
             listenForNextMove();
+        else if(msg.checkWinner() == thisPlayer)
+            showWinnerThisPlayer();
+        else
+            showWinnerOtherPlayer();
 
     }
 
     private void listenForNextMove() throws IOException, ClassNotFoundException {
 
-        disableAllButtons();
+//        disableAllButtons();
 
-        GameResultMessage msg = (GameResultMessage) (AppData.waitForGameMove(currentPlayer).getMessage());
+        GameResultMessage msg = (GameResultMessage) ((AppData.waitForGameMove(currentPlayer)).getMessage());
 
         System.out.println(currentPlayer + " just played a turn.");
         play(currentPlayer, msg.getGameMove());
 
-        if(msg.checkWinner() == 'X')
-            showWinner1();
-        else if(msg.checkWinner() == 'O')
-            showWinner2();
+        if(msg.checkWinner() == '-');
+        else if(msg.checkWinner() == thisPlayer)
+            showWinnerThisPlayer();
+        else
+            showWinnerOtherPlayer();
+
+//        enableAllButtons();
     }
 
 
@@ -374,7 +377,7 @@ public class ControllerLan implements Runnable{
     }
 
     //Program will show that player 1 has won the round
-    public void showWinner1()
+    public void showWinnerThisPlayer()
     {
         label_winner1.setText("winner!");
         imageView_1.setVisible(true);
@@ -382,10 +385,11 @@ public class ControllerLan implements Runnable{
         label_player1score.setText("" + player1score);
         disableAllButtons();
         winStatus = true;
+        System.out.println("You won!");
     }
 
     //Program will show that player 2 has won the round
-    public void showWinner2()
+    public void showWinnerOtherPlayer()
     {
         label_winner2.setText("winner!");
         imageView_2.setVisible(true);
@@ -393,6 +397,7 @@ public class ControllerLan implements Runnable{
         label_player2score.setText("" + player2score);
         disableAllButtons();
         winStatus = true;
+        System.out.println("The other player won!");
     }
 
     public void setThisPlayer(char player) {

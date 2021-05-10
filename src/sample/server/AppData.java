@@ -33,12 +33,12 @@ public final class AppData {
         }
     }
 
-    public static void createUser(Packet packet) throws IOException, ClassNotFoundException {
-        connection.sendPacket(packet);
+    public static void createUser(String userID, String password, String firstName, String lastName) throws IOException, ClassNotFoundException {
+        connection.sendPacket(new Packet("newUser", new UserInfoMessage(userID, password, firstName, lastName)));
     }
 
-    public static void updateUser(Packet packet) throws IOException, ClassNotFoundException {
-        connection.sendPacket(packet);
+    public static void updateUser(String userID, String password, String firstName, String lastName) throws IOException, ClassNotFoundException {
+        connection.sendPacket(new Packet("updateUser", new UserInfoMessage(userID, password, firstName, lastName)));
         Packet updatedUser = connection.getPacket();
         user.update(updatedUser);
     }
@@ -54,7 +54,6 @@ public final class AppData {
     }
 
     public static Packet waitForGameMove(char currentPlayer) throws IOException, ClassNotFoundException {
-        connection.sendPacket(new Packet("waitGameMove", new GameWaitMessage(currentPlayer)));
         return connection.getPacket();
     }
 

@@ -31,7 +31,7 @@ public class ControllerCreateAccount {
     @FXML
     public void createAccount(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
 
-        AppData.createUser(new Packet("newUser", new UserInfoMessage(textField_userID.getText(), passwordField_password.getText(), textField_firstName.getText(), textField_lastName.getText())));
+        AppData.createUser(textField_userID.getText(), passwordField_password.getText(), textField_firstName.getText(), textField_lastName.getText());
 
         Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         currentStage.close();

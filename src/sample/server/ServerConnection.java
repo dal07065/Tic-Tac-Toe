@@ -2,9 +2,11 @@ package sample.server;
 
 import message.Message;
 import message.Packet;
+import message.SubscribeMessage;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ServerConnection implements Runnable{
     private Socket socket;
@@ -28,6 +30,13 @@ public class ServerConnection implements Runnable{
 
         os = new ObjectOutputStream(socket.getOutputStream());
 
+//        ArrayList<String> channels = new ArrayList<>();
+//
+//        channels.add("GameController");
+//
+//        os.writeObject(new Packet("subscribe", new SubscribeMessage()));
+
+
         connectionThread = new Thread(this);
         connectionThread.start();
     }
@@ -46,27 +55,4 @@ public class ServerConnection implements Runnable{
         socket.close();
     }
 
-    public void writeInt(int integer) throws IOException {
-        os.writeInt(integer);
-    }
-
-    public int readInt() throws IOException {
-        return is.readInt();
-    }
-
-    public void pauseConnection() throws InterruptedException {
-        synchronized (connectionThread)
-        {
-            connectionThread.wait();
-        }
-
-    }
-    public void resumeConnection()
-    {
-//        synchronized (connectionThread)
-//        {
-//
-//        }
-        connectionThread.notify();
-    }
 }

@@ -1,7 +1,6 @@
 package sample;
 
 import message.ConnectGameReceivedMessage;
-import message.Packet;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
