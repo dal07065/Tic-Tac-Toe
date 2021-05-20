@@ -16,7 +16,7 @@
     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="220.0" minWidth="10.0" prefWidth="189.60001220703128" />
   </columnConstraints>
   <rowConstraints>
-      <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -45,7 +45,11 @@
       <TextField fx:id="textField_firstName" GridPane.columnIndex="2" GridPane.rowIndex="11" />
       <Label text="password" GridPane.rowIndex="13" />
       <PasswordField fx:id="passwordField_password" GridPane.columnIndex="2" GridPane.rowIndex="13" />
-      <Label text="PROFILE" GridPane.columnIndex="1" />
+      <Label text="PROFILE" GridPane.columnIndex="1">
+         <padding>
+            <Insets left="53.0" />
+         </padding>
+      </Label>
       <Label text="STATS" GridPane.rowIndex="1" />
       <Label text="wins" GridPane.rowIndex="3" />
       <Label text="loses" GridPane.rowIndex="4" />

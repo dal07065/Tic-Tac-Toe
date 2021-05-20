@@ -20,6 +20,12 @@ public class ControllerProfile {
     private Label label_lastName;
     @FXML
     private Button button_updateProfile;
+    @FXML
+    private Label label_wins;
+    @FXML
+    private Label label_loses;
+    @FXML
+    private Label label_ties;
 
     @FXML
     private TextField textField_lastName;
@@ -38,6 +44,7 @@ public class ControllerProfile {
         label_firstName.setText(AppData.user.getFirstName().toLowerCase());
         label_lastName.setText(AppData.user.getLastName().toLowerCase());
         label_userID.setText(AppData.user.getUserID().toLowerCase());
+        //label_wins.setText(AppData.);
 
         textField_lastName.clear();
         textField_firstName.clear();

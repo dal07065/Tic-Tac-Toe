@@ -27,11 +27,11 @@ public class ControllerCreateAccount {
     @FXML
     private TextField textField_userID;
     @FXML
-    private int wins;
+    private int wins = 0;
     @FXML
-    private int loses;
+    private int loses = 0;
     @FXML
-    private int ties;
+    private int ties = 0;
 
     @FXML
     public void createAccount(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
