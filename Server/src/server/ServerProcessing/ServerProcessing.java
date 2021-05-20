@@ -46,7 +46,7 @@ public class ServerProcessing implements Runnable {
                     User user = Database.findUser(((LogInMessage) msg).getUserID());
 
                     if(user != null)
-                        serverConnection.sendPacket(new Packet("LogInResponse" + packet.getFromID(), false, new LogInResponseMessage(user.getUserID(), user.getPassword(), user.getFirstName(), user.getLastName())));
+                        serverConnection.sendPacket(new Packet("LogInResponse" + packet.getFromID(), false, new LogInResponseMessage(user.getUserID(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getWins(), user.getLoses(), user.getTies())));
                     else
                         serverConnection.sendPacket(new Packet("LogInResponse" + packet.getFromID(), false,null));
 

@@ -9,13 +9,20 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="362.0" prefWidth="501.0" stylesheets="@Main.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/15.0.1" fx:controller="sample.ControllerProfile">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="477.0" prefWidth="502.0" stylesheets="@Main.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ControllerProfile">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="192.0" minWidth="10.0" prefWidth="127.20001220703125" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="294.39996337890625" minWidth="10.0" prefWidth="183.99998779296874" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="192.0" minWidth="10.0" prefWidth="129.5999755859375" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="294.39996337890625" minWidth="10.0" prefWidth="142.4000244140625" />
     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="220.0" minWidth="10.0" prefWidth="189.60001220703128" />
   </columnConstraints>
   <rowConstraints>
+      <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints maxHeight="128.60001220703126" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     <RowConstraints maxHeight="128.60001220703126" minHeight="0.0" prefHeight="15.00000896453858" vgrow="SOMETIMES" />
@@ -26,18 +33,26 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Label text="user" GridPane.rowIndex="2" />
-      <Label text="first name" GridPane.rowIndex="4" />
-      <Label text="last name" GridPane.rowIndex="5" />
-      <Label fx:id="label_userID" text="USER ID" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <Label fx:id="label_firstName" text="FIRST NAME" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-      <Label fx:id="label_lastName" text="LAST NAME" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-      <Label text="PROFILE" />
-      <Button fx:id="button_updateProfile" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#updateProfile" text="update profile" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-      <TextField fx:id="textField_lastName" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-      <TextField fx:id="textField_firstName" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-      <Label text="password" GridPane.rowIndex="6" />
-      <PasswordField fx:id="passwordField_password" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+      <Label text="user" GridPane.rowIndex="9" />
+      <Label text="first name" GridPane.rowIndex="11" />
+      <Label text="last name" GridPane.rowIndex="12" />
+      <Label fx:id="label_userID" text="USER ID" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+      <Label fx:id="label_firstName" text="FIRST NAME" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+      <Label fx:id="label_lastName" text="LAST NAME" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+      <Label text="INFO" textAlignment="CENTER" GridPane.rowIndex="7" />
+      <Button fx:id="button_updateProfile" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#updateProfile" text="update profile" GridPane.columnIndex="2" GridPane.rowIndex="14" />
+      <TextField fx:id="textField_lastName" GridPane.columnIndex="2" GridPane.rowIndex="12" />
+      <TextField fx:id="textField_firstName" GridPane.columnIndex="2" GridPane.rowIndex="11" />
+      <Label text="password" GridPane.rowIndex="13" />
+      <PasswordField fx:id="passwordField_password" GridPane.columnIndex="2" GridPane.rowIndex="13" />
+      <Label text="PROFILE" GridPane.columnIndex="1" />
+      <Label text="STATS" GridPane.rowIndex="1" />
+      <Label text="wins" GridPane.rowIndex="3" />
+      <Label text="loses" GridPane.rowIndex="4" />
+      <Label text="ties" GridPane.rowIndex="5" />
+      <Label text="WINS" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <Label text="LOSES" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <Label text="TIES" GridPane.columnIndex="1" GridPane.rowIndex="5" />
    </children>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

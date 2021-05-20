@@ -26,11 +26,17 @@ public class ControllerCreateAccount {
     private PasswordField passwordField_password;
     @FXML
     private TextField textField_userID;
+    @FXML
+    private int wins;
+    @FXML
+    private int loses;
+    @FXML
+    private int ties;
 
     @FXML
     public void createAccount(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
 
-        AppData.createUser(textField_userID.getText(), passwordField_password.getText(), textField_firstName.getText(), textField_lastName.getText());
+        AppData.createUser(textField_userID.getText(), passwordField_password.getText(), textField_firstName.getText(), textField_lastName.getText(), wins, loses, ties);
 
         Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         currentStage.close();
