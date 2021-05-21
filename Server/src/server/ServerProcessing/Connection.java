@@ -19,10 +19,13 @@ import java.util.ArrayList;
 
 public class Connection implements Runnable{
     private Socket socket;
-    private ArrayList<String> subscribedChannels;
+    private ArrayList<String> subscribedChannels = new ArrayList<>();
 
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
+
+    private String fromID;
+    public String getFromID(){return fromID;}
 
 
     public Connection(Socket socket) throws IOException, ClassNotFoundException {
@@ -30,7 +33,7 @@ public class Connection implements Runnable{
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         inputStream = new ObjectInputStream(socket.getInputStream());
 
-        System.out.println("New Connection Accepted: " + socket.getInetAddress().getHostAddress());
+
 
         // Get a list of channels to subscribe to
 
@@ -39,6 +42,7 @@ public class Connection implements Runnable{
         Thread connectionThread = new Thread(this);
         connectionThread.start();
 
+
     }
 
     @Override
@@ -46,10 +50,6 @@ public class Connection implements Runnable{
         try {
             while (true) {
                 Packet packet = (Packet) inputStream.readObject();
-
-                // register this connection to the UpdateUserResponsefromID channel
-                if (packet.getNeedsResponse())
-                    addChannel(packet.getType() + "Response" + packet.getFromID());
 
                 Server.packets.put(packet);
             }
@@ -71,6 +71,7 @@ public class Connection implements Runnable{
 
     public void addChannel(String channel)
     {
+        subscribedChannels.add(channel);
         // Add the connection to the subscription list
         Server.addConnectionToChannel(channel, this);
     }
@@ -86,12 +87,14 @@ public class Connection implements Runnable{
 
         SubscribeMessage msg = (SubscribeMessage) packet.getMessage();
 
-        subscribedChannels = msg.getChannels();
+        System.out.println("New Connection Accepted: " + socket.getInetAddress().getHostAddress() + " : " + fromID);
 
-        for(String channel:subscribedChannels)
+        for(String channel:msg.getChannels())
         {
             addChannel(channel);
         }
+
+        fromID = subscribedChannels.get(0);
 
     }
 

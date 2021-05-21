@@ -11,6 +11,9 @@ public class User {
     private String firstName;
     private String lastName;
 
+    private String currentGameID;
+    public void setCurrentGameID(String id) {currentGameID = id;}
+
     public User() {
 
     }
@@ -76,4 +79,6 @@ public class User {
         return lastName;
     }
 
+    public String getGameID() { return currentGameID;
+    }
 }

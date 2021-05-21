@@ -9,13 +9,14 @@ import server.User;
 import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class ServerProcessing implements Runnable {
 
     private ClientConnection serverConnection;
 
     public ServerProcessing() throws IOException, ClassNotFoundException {
-        serverConnection = new ClientConnection("LogIn", "NewUser", "UpdateUser", "CloseSocket");
+        serverConnection = new ClientConnection("ServerProcessing", "LogIn", "NewUser", "UpdateUser", "CloseSocket", "SubscribeMessage", "Unsubscribe");
     }
 
     @Override
@@ -27,18 +28,28 @@ public class ServerProcessing implements Runnable {
 
                 Packet packet = (Packet) serverConnection.getPacket();
 
-                System.out.println("*Server has received a message* : " + packet.getType());
+                System.out.println("*Server has received a message* : " + packet.getChannel());
 
                 Message msg = packet.getMessage();
 
                 if(msg instanceof SubscribeMessage)
                 {
-//                for(String channel:((SubscribeMessage) msg).getChannels())
-//                {
-//                    // find connection via userID or something
-//
-////                    Server.addConnectionToChannel(channel, connection);
-//                }
+                    ArrayList<Connection> connectionChannel = Server.subscriptions.get(packet.getFromID());
+
+
+                    for(String channel:((SubscribeMessage) msg).getChannels())
+                    {
+                        // find connection via userID or something
+
+                        connectionChannel.get(0).addChannel(channel);
+                    }
+                }
+                else if(msg instanceof UnsubscribeMessage)
+                {
+                    ArrayList<Connection> connectionChannel = Server.subscriptions.get(packet.getFromID());
+
+                    connectionChannel.get(0).removeChannel(((UnsubscribeMessage) msg).getChannel());
+
                 }
                 else if(msg instanceof LogInMessage)
                 {
@@ -46,9 +57,9 @@ public class ServerProcessing implements Runnable {
                     User user = Database.findUser(((LogInMessage) msg).getUserID());
 
                     if(user != null)
-                        serverConnection.sendPacket(new Packet("LogInResponse" + packet.getFromID(), false, new LogInResponseMessage(user.getUserID(), user.getPassword(), user.getFirstName(), user.getLastName())));
+                        serverConnection.sendPacket(new Packet(packet.getFromID(), new LogInResponseMessage(true, user.getUserID(), user.getPassword(), user.getFirstName(), user.getLastName())));
                     else
-                        serverConnection.sendPacket(new Packet("LogInResponse" + packet.getFromID(), false,null));
+                        serverConnection.sendPacket(new Packet(packet.getFromID(), new LogInResponseMessage(false, null, null, null, null)));
 
                 }
                 else if(msg instanceof UpdateUserMessage)
@@ -67,7 +78,20 @@ public class ServerProcessing implements Runnable {
 //                serverConnection.sendPacket(new Packet("NewUserResponse" + packet.getFromID(), false, msg));
                     // no need to send back response to connection
                 }
-                else if(packet.getType().equals("CloseSocket"))
+                else if(msg instanceof QuitGameMessage)
+                {
+                    ArrayList<Connection> connectionChannel = Server.subscriptions.get(packet.getFromID());
+
+
+                    for(String channel:((SubscribeMessage) msg).getChannels())
+                    {
+                        // find connection via userID or something
+
+                        connectionChannel.get(0).addChannel(channel);
+                    }
+                }
+
+                else if(packet.getChannel().equals("CloseSocket"))
                 {
 
                 }
@@ -78,8 +102,12 @@ public class ServerProcessing implements Runnable {
 
             }
 
-        } catch (SQLException | InterruptedException throwables) {
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }

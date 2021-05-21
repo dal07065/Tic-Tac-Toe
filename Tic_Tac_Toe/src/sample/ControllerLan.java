@@ -87,7 +87,13 @@ public class ControllerLan implements Runnable{
             label_player1.setText("x");
             label_player2.setText("o");
 
+            System.out.println("Waiting for other player to join...");
+
+            AppData.waitForPlayerToJoinGame();
+
             // Player X goes first
+            System.out.println("Make the move!");
+            playerTurn = true;
         }
         else
         {
@@ -97,6 +103,9 @@ public class ControllerLan implements Runnable{
             // Player O goes second
             // - wait for player X ( all button.setMouseTransparent(false) )
 
+
+            System.out.println("Waiting for next move...");
+            playerTurn = false;
             listenForNextMove();
 
         }
@@ -122,7 +131,12 @@ public class ControllerLan implements Runnable{
 
         String id = ((Button)(event.getSource())).getId();
 
-        GameResultMessage msg = (GameResultMessage) ((AppData.makeGameMove(currentPlayer, id)).getMessage());
+        GameMoveResponseMessage msg = (GameMoveResponseMessage) ((AppData.makeGameMove(currentPlayer, id)).getMessage());
+
+        if(!msg.isContinueGame())
+        {
+            Main.displayQuestionAlert("Shoot!", "The other player quit the game.");
+        }
 
         System.out.println(id);
         System.out.println(currentPlayer + " just played a turn.");
@@ -142,8 +156,7 @@ public class ControllerLan implements Runnable{
     private void listenForNextMove() throws IOException, ClassNotFoundException {
 
 //        disableAllButtons();
-
-        GameResultMessage msg = (GameResultMessage) ((AppData.waitForGameMove(currentPlayer)).getMessage());
+        GameMoveResponseMessage msg = (GameMoveResponseMessage) ((AppData.waitForGameMove()).getMessage());
 
         System.out.println(currentPlayer + " just played a turn.");
         play(currentPlayer, msg.getGameMove());
@@ -292,6 +305,8 @@ public class ControllerLan implements Runnable{
     public void buttonBackClicked(ActionEvent actionEvent) throws IOException {
 
         // show a popup that says are you sure you would like to go back to main menu and discontinue this game?
+
+        AppData.quitCurrentGame();
 
         Parent root = FXMLLoader.load(getClass().getResource("design/main.fxml"));
 

@@ -15,25 +15,25 @@ public class MessageProcessing implements Runnable{
             {
                 System.out.println("Checking for packets...");
 
-                Packet serverMessage = Server.packets.take();
+                Packet packet = Server.packets.take();
 
-                System.out.println("Packet received: " + serverMessage.getType() + " from " + serverMessage.getFromID());
+                System.out.println("Packet received for channel: " + packet.getChannel() + " from " + packet.getFromID());
 
-                if(Server.subscriptions.containsKey(serverMessage.getType()))
+                if(Server.subscriptions.containsKey(packet.getChannel()))
                 {
-                    System.out.println("Subscriptions for this type: " + serverMessage.getType());
+                    System.out.println("Subscriptions for this type: " + packet.getChannel());
 
-                    ArrayList<Connection> subscribers = Server.subscriptions.get(serverMessage.getType());
+                    ArrayList<Connection> subscribers = Server.subscriptions.get(packet.getChannel());
 
                     for(int i = 0; i < subscribers.size(); i++)
                     {
-                        System.out.println("- " + subscribers.get(i).hashCode());
+                        System.out.println("- " + subscribers.get(i).getFromID());
                     }
 
 
                     for (Connection c: subscribers) {
 
-                        c.update(serverMessage);
+                        c.update(packet);
 
                     }
                 }

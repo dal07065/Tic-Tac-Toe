@@ -4,15 +4,17 @@ import SharedServerComponents.ClientConnection;
 import message.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public final class AppData {
     public static ClientConnection connection;
     public static User user;
 
+
     public static void connectToServer() throws IOException {
         if(connection == null)
         {
-            connection = new ClientConnection("everyone");
+            connection = new ClientConnection("client1", "everyone");
 
         }
     }
@@ -23,10 +25,10 @@ public final class AppData {
         user = null;
     }
 
-    public static boolean login(String userID, String password) throws IOException, ClassNotFoundException {
-        connection.sendPacket(new Packet("LogIn", true, new LogInMessage(userID, password)));
+    public static boolean login(String userID, String password) {
+        connection.sendPacket(new Packet( "LogIn", new LogInMessage(userID, password)));
         Packet packet = connection.getPacket("LogInResponse");
-        if(packet.getMessage() == null)
+        if(!((LogInResponseMessage)packet.getMessage()).isSuccess())
             return false;
         else {
             user = new User(packet);
@@ -34,27 +36,62 @@ public final class AppData {
         }
     }
 
-    public static void createUser(String userID, String password, String firstName, String lastName) throws IOException, ClassNotFoundException {
-        connection.sendPacket(new Packet("NewUser", false, new NewUserMessage(userID, password, firstName, lastName)));
+    public static void createUser(String userID, String password, String firstName, String lastName)  {
+        connection.sendPacket(new Packet("NewUser", new NewUserMessage(userID, password, firstName, lastName)));
     }
 
-    public static void updateUser(String userID, String password, String firstName, String lastName) throws IOException, ClassNotFoundException {
-        connection.sendPacket(new Packet("UpdateUser", false, new UpdateUserMessage(userID, password, firstName, lastName)));
+    public static void updateUser(String userID, String password, String firstName, String lastName)  {
+        connection.sendPacket(new Packet("UpdateUser", new UpdateUserMessage(userID, password, firstName, lastName)));
         user.update(password, firstName, lastName);
     }
 
-    public static Packet connectToGame(int password) throws IOException, ClassNotFoundException {
-        connection.sendPacket(new Packet("ConnectGame", true, new ConnectGameMessage(password)));
-        return connection.getPacket("ConnectGameResponse");
-    }
-
-    public static Packet makeGameMove(char currentPlayer, String moveID) throws IOException, ClassNotFoundException {
-        connection.sendPacket(new Packet("GameMove", true, new GameMoveMessage(moveID, currentPlayer)));
+    public static Packet makeGameMove(char currentPlayer, String moveID)  {
+        connection.sendPacket(new Packet( "GameMove", new GameMoveMessage(moveID, user.getGameID(), currentPlayer)));
         return connection.getPacket("GameMoveResponse");
     }
 
-    public static Packet waitForGameMove(char currentPlayer) throws IOException, ClassNotFoundException {
+    public static Packet waitForGameMove()  {
         return connection.getPacket("GameMoveResponse");
     }
 
+    public static void startNewGame() {
+        connection.sendPacket(new Packet( "NewGame", new NewGameMessage(user.getUserID())));
+        Packet packet = connection.getPacket("NewGameResponse");
+        connection.sendPacket(new Packet("SubscribeMessage", new SubscribeMessage(((NewGameResponseMessage)packet.getMessage()).getGameID())));
+        user.setCurrentGameID(((NewGameResponseMessage)packet.getMessage()).getGameID());
+
+    }
+
+    public static void waitForPlayerToJoinGame()
+    {
+        Packet packetJoinGame = connection.getPacket("JoinGameResponse");
+        if(packetJoinGame.getMessage() instanceof JoinGameResponseMessage)
+        {
+            System.out.println("Player has joined!");
+        }
+    }
+
+    public static boolean joinGame(String selectedItem) {
+
+        connection.sendPacket(new Packet( "JoinGame", new JoinGameMessage(user.getUserID(), selectedItem)));
+        JoinGameResponseMessage msg = (JoinGameResponseMessage) connection.getPacket("JoinGameResponse").getMessage();
+        if(msg.isSuccess())
+        {
+            user.setCurrentGameID(msg.getGameID());
+            connection.sendPacket(new Packet("SubscribeMessage", new SubscribeMessage(msg.getGameID())));
+
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public static ArrayList<String> getAllGames() {
+        connection.sendPacket(new Packet("GetAllGames", new GetAllGamesMessage()));
+        return ((GetAllGamesResponseMessage) connection.getPacket("GetAllGamesResponse").getMessage()).getAllGames();
+    }
+
+    public static void quitCurrentGame() {
+        connection.sendPacket(new Packet("QuitGame", new QuitGameMessage(user.getGameID(), user.getUserID())));
+    }
 }
