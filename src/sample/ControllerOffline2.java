@@ -175,7 +175,7 @@ public class ControllerOffline2 {
         Parent root = FXMLLoader.load(getClass().getResource("design/main.fxml"));
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Main.class.getResource("Main.css").toExternalForm());
+        scene.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
 
         Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         currentStage.setTitle("Tic Tac Toe");
@@ -327,13 +327,13 @@ public class ControllerOffline2 {
     //Sets up and tells program who the current player is
     public void setCurrentPlayer(char player)
     {
-        this.currentPlayer = player;
+        currentPlayer = player;
     }
 
     //Sets up and tells program who player 1 is
     public void setStartingPlayer(char startPlayer)
     {
-        this.startingPlayer = startPlayer;
+        startingPlayer = startPlayer;
     }
 
 

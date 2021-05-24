@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import sample.AI.Minimax;
 
 import java.io.IOException;
+import sample.AI.BoardWithMove;
 
 import static java.lang.Thread.sleep;
 
@@ -21,6 +22,8 @@ import static java.lang.Thread.sleep;
 public class ControllerOffline1 {
 
     Board board = new Board(3, 3);
+
+    BoardWithMove boardWithMove = new BoardWithMove(board, null);
 
     private static char currentPlayer;
     private static char startingPlayer;
@@ -32,7 +35,7 @@ public class ControllerOffline1 {
 
     private int count = 0;
 
-    private static Minimax ai = new Minimax();
+    private static final Minimax ai = new Minimax();
 
     @FXML
     private Button button_topLeft;
@@ -99,7 +102,7 @@ public class ControllerOffline1 {
      * @param event the button event
      */
     @FXML
-    void buttonClicked(ActionEvent event) throws InterruptedException {
+    void buttonClicked(ActionEvent event) {
 
         String id = ((Button)(event.getSource())).getId();
         System.out.println(id);
@@ -109,12 +112,23 @@ public class ControllerOffline1 {
         play(currentPlayer, id);
 
         if(!winStatus) {
-            String buttonID = ai.findBestMove(board, currentPlayer, false);
-            System.out.println(buttonID);
-            System.out.println(currentPlayer + " just played a turn.");
 
-            play(currentPlayer, buttonID);
+            if (currentPlayer == 'X') {
 
+                String buttonID = ai.findBestMove(boardWithMove, currentPlayer);
+                System.out.println(buttonID);
+                System.out.println(currentPlayer + " just played a turn.");
+
+                play(currentPlayer, buttonID);
+            }
+            else
+            {
+                String buttonID = ai.findBestMove(boardWithMove, currentPlayer);
+                System.out.println(buttonID);
+                System.out.println(currentPlayer + " just played a turn.");
+
+                play(currentPlayer, buttonID);
+            }
 
         }
 
@@ -193,7 +207,7 @@ public class ControllerOffline1 {
         Parent root = FXMLLoader.load(getClass().getResource("design/main.fxml"));
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Main.class.getResource("Main.css").toExternalForm());
+        scene.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
 
         Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         currentStage.setTitle("Tic Tac Toe");
@@ -215,7 +229,7 @@ public class ControllerOffline1 {
      */
 
     @FXML
-    private void play(char XO, String id) throws InterruptedException {
+    private void play(char XO, String id) {
         Button button = findButton(id);
 
 
@@ -348,13 +362,13 @@ public class ControllerOffline1 {
     //Sets up and tells program who the current player is
     public void setCurrentPlayer(char player)
     {
-        this.currentPlayer = player;
+        currentPlayer = player;
     }
 
     //Sets up and tells program who player 1 is
     public void setStartingPlayer(char startPlayer)
     {
-        this.startingPlayer = startPlayer;
+        startingPlayer = startPlayer;
     }
 
 

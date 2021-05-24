@@ -1,8 +1,6 @@
 package sample.AI;
 
-import sample.Board;
-
 public interface BoardEvaluator {
 
-    int evaluateBoard(char[][] board, char currentPlayer, int depth);
+    int evaluateBoard(BoardWithMove board, int depth);
 }

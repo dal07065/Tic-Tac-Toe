@@ -14,7 +14,7 @@ public class Main extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("design/login.fxml"));
 
-        UserDBConnection.connect();
+        //UserDBConnection.connect();
 
         Parent root = loader.load();
         primaryStage.setTitle("Tic Tac Toe : Log In");

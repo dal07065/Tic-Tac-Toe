@@ -1,20 +1,13 @@
 package sample.AI;
 
 import sample.Board;
+import sample.Move;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Minimax implements BoardEvaluator {
 
-//    private boolean isMaxPlayer;
-//
-//    public boolean isMaxPlayer()
-//    {
-//        return isMaxPlayer;
-//    }
-
-    public String findBestMove(Board boardObj, char currentPlayer, boolean isMaxPlayer)
+    public String findBestMove(BoardWithMove boardObj, char currentPlayer)
     {
         /*
             1. Determine what spots on the board are AVAILABLE/EMPTY
@@ -23,88 +16,173 @@ public class Minimax implements BoardEvaluator {
             4. Find best score from the array of spots
             5. Correlate that spot with a button id and return a string of buttonID
          */
-        char[][] board = boardObj.getBoard();
 
-        int x = 0,y = 0;
+//        if(isMaxPlayer)
+//        {
+//            int maxScore = Integer.MIN_VALUE;
+//
+//            ArrayList<BoardWithMove> children = generateChildren(boardObj, currentPlayer);
+//
+//            for (BoardWithMove child: children)
+//            {
+//                int maxEval = minimax(child, nextPlayer(currentPlayer), false, Integer.MIN_VALUE,
+//                        Integer.MAX_VALUE, 0);
+//
+//                maxScore = Math.max(maxScore, maxEval);
+//            }
 
-        if(isMaxPlayer)
-        {
-            int score = (int)Double.NEGATIVE_INFINITY;
+           Move bestMove = getNextMove(boardObj, currentPlayer);
 
-            for(int i = 0; i < boardObj.getBoardSize(); i++)
-            {
-                for(int j = 0; j < boardObj.getBoardSize(); j++)
-                {
-                    if(board[i][j] == '-')
-                    {
-                        board[i][j] = currentPlayer;
-//                        printBoard(board);
-                        int scoretemp = minimax(board, nextPlayer(currentPlayer), false, 0);
-                        board[i][j] = '-';
+           int x = bestMove.getRow();
+           int y = bestMove.getCol();
 
-                        if(scoretemp > score)
-                        {
-                            score = scoretemp;
-                            x = i;
-                            y = j;
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            int score = (int)Double.POSITIVE_INFINITY;
+            // Return the located spot on the board and return the button id
 
-            for(int i = 0; i < boardObj.getBoardSize(); i++)
-            {
-                for(int j = 0; j < boardObj.getBoardSize(); j++)
-                {
-                    if(board[i][j] == '-')
-                    {
-                        board[i][j] = currentPlayer;
-//                        printBoard(board);
-                        int scoretemp = minimax(board, nextPlayer(currentPlayer), true, 0);
-                        board[i][j] = '-';
+            String buttonID = "button_";
 
-                        if(scoretemp < score)
-                        {
-                            score = scoretemp;
-                            x = i;
-                            y = j;
-                        }
-                    }
-                }
-            }
-        }
+            if( x == 0 )
+                buttonID = buttonID + "top";
+            else if ( x == 1)
+                buttonID = buttonID + "mid";
+            else
+                buttonID = buttonID + "bot";
 
-        // Return the located spot on the board and return the button id
+            if (y == 0)
+                buttonID += "Left";
+            else if(y == 1)
+                buttonID += "Mid";
+            else
+                buttonID += "Right";
 
-        String buttonID = "button_";
+            return buttonID;
 
-        if( x == 0 )
-            buttonID = buttonID + "top";
-        else if ( x == 1)
-            buttonID = buttonID + "mid";
-        else
-            buttonID = buttonID + "bot";
+//            for (int i = 0; i < board.length; i++) {
+//                for (int j = 0; j < board.length; j++) {
+//                    board[i][j] = currentPlayer;
+//                    int scoretemp = minimax(boardObj, nextPlayer(currentPlayer), false,
+//                            Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
+//                    board[i][j] = '-';
+//
+//                    if (scoretemp > score)
+//                    {
+//                        score = scoretemp;
+//                        x = i;
+//                        y = j;
+//                    }
+////                    if(board.getPlayerPosition(i, j) == '-')
+////                    {
+////                        board[i][j] = currentPlayer;
+////                        printBoard(board);
+//
+//                    //board[i][j] = '-';
+//                }
+//            }
+//        }
+//        else
+//        {
+//            int minScore = Integer.MAX_VALUE;
+//
+//           ArrayList<BoardWithMove> children = generateChildren(boardObj, currentPlayer);
+//
+//            for (BoardWithMove child: children)
+//            {
+//                int minEval = minimax(child, nextPlayer(currentPlayer), true, Integer.MIN_VALUE,
+//                        Integer.MAX_VALUE, 0);
+//
+//                minScore = Math.min(minScore, minEval);
+//            }
 
-        if (y == 0)
-            buttonID += "Left";
-        else if(y == 1)
-            buttonID += "Mid";
-        else
-            buttonID += "Right";
+            // Return the located spot on the board and return the button id
 
-        return buttonID;
+            //children = generateChildren(boardObj, currentPlayer);
+
+//            for (int i = 0; i < board.length; i++) {
+//
+//                for (int j = 0; j < board.length; j++) {
+//                    board[i][j] = currentPlayer;
+//                    int scoretemp = minimax(boardObj, nextPlayer(currentPlayer), true,
+//                            Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
+//                    board[i][j] = '-';
+//
+//                    if (scoretemp < score)
+//                    {
+//                        score = scoretemp;
+//                        x = i;
+//                        y = j;
+//                    }
+//                }
+            //}
     }
 
-    public int minimax(char[][] board, char currentPlayer, boolean isMaxPlayer, int depth)
+    public Move getNextMove(BoardWithMove board, char currentPlayer)
+    {
+        Move bestMove = null;
+
+        int bestEval = currentPlayer == 'X' ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+
+        ArrayList<BoardWithMove> children = generateChildren(board, currentPlayer);
+
+        for (BoardWithMove child: children)
+        {
+            boolean isMax = currentPlayer == 'X' ? false : true;
+
+            int eval = minimax(child, nextPlayer(currentPlayer), isMax, Integer.MIN_VALUE, Integer.MAX_VALUE,
+                                0);
+
+            if(eval > bestEval && currentPlayer == 'X' ||
+                    eval < bestEval && currentPlayer == 'O')
+            {
+                bestEval = eval;
+                bestMove = child.move;
+            }
+        }
+
+        return bestMove;
+    }
+
+    public ArrayList<BoardWithMove> generateChildren(BoardWithMove position, char currentPlayer)
+    {
+        ArrayList<BoardWithMove> children = new ArrayList<>();
+
+        for (int i = 0; i < position.board.getBoardSize(); i++)
+            for (int j = 0; j < position.board.getBoardSize(); j++)
+                try {
+                    if (position.board.getPlayerPosition(i, j) == '-')
+                    {
+                        String buttonID = "button_";
+
+                        if( i == 0 )
+                            buttonID = buttonID + "top";
+                        else if ( i == 1)
+                            buttonID = buttonID + "mid";
+                        else
+                            buttonID = buttonID + "bot";
+
+                        if (j == 0)
+                            buttonID += "Left";
+                        else if(j == 1)
+                            buttonID += "Mid";
+                        else
+                            buttonID += "Right";
+
+                        Board childBoard = (Board) position.board.clone();
+                        childBoard.setMove(buttonID, currentPlayer);
+                        Move move = new Move(i, j, currentPlayer);
+                        children.add(new BoardWithMove(childBoard, move));
+                    }
+                } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                }
+
+        return children;
+    }
+
+    public int minimax(BoardWithMove board, char currentPlayer, boolean isMaxPlayer, int alpha, int beta, int depth)
     {
         // if board is in terminal state
         // return static evaluation of position
         // either +100 for X, -100 for O, or 0 for tie
-        int score = evaluateBoard(board, currentPlayer, depth);
+        int score = evaluateBoard(board, depth);
         if(score != 0)
             return score;
 
@@ -114,28 +192,36 @@ public class Minimax implements BoardEvaluator {
         if (isMaxPlayer)
         {
             // Worst possible case for X
-            int max = (int)Double.NEGATIVE_INFINITY;
+            int max = Integer.MIN_VALUE;
 
-            for(int i = 0; i < board.length; i++)
+            ArrayList<BoardWithMove> children = generateChildren(board, currentPlayer);
+
+            for(BoardWithMove child: children)
             {
-                for(int j = 0; j < board.length; j++)
-                {
-                    if(board[i][j] == '-')
-                    {
-                        board[i][j] = currentPlayer;
+//                if(board.getPlayerPosition(i, j) == '-')
+//                {
+//                        board[i][j] = currentPlayer;
 //                        printBoard(board);
-                        int bestMove = minimax(board, nextPlayer(currentPlayer), false, depth + 1);
-                        board[i][j] = '-';
-                        if (bestMove > max)
-                        {
-                            max = bestMove;
-                        }
-                    }
+                int bestMove = minimax(child, nextPlayer(currentPlayer), false,
+                                                alpha, beta, depth + 1);
+                //board[i][j] = '-';
+
+                max = Math.max(max, bestMove);
+
+//                if (bestMove > max)
+//                {
+//                    max = bestMove;
+//                }
+                alpha = Math.max(alpha, max);
+                if (beta <= alpha)
+                {
+                    break;
                 }
             }
 
             return max;
         }
+
 
         // If it's the minimizing player's turn (O),
         // loop through each child or move from that current position
@@ -144,123 +230,141 @@ public class Minimax implements BoardEvaluator {
         else
         {
             // Worst possible case for O
-            int min = (int)Double.POSITIVE_INFINITY;
+            int min = Integer.MAX_VALUE;
 
-            for(int i = 0; i < board.length; i++)
+            ArrayList<BoardWithMove> children = generateChildren(board, currentPlayer);
+
+            for(BoardWithMove child: children)
             {
-                for(int j = 0; j < board.length; j++)
-                {
-                    if (board[i][j] == '-')
-                    {
-                        board[i][j] = currentPlayer;
+                        //board[i][j] = currentPlayer;
 //                        printBoard(board);
-                        int temp = minimax(board, nextPlayer(currentPlayer), true, depth + 1);
-                        board[i][j] = '-';
-                        if (temp < min) {
-                            min = temp;
-                        }
-                    }
+                int temp = minimax(child, nextPlayer(currentPlayer), true,
+                                                alpha, beta, depth + 1);
+                            //board[i][j] = '-';
+                min = Math.min(min, temp);
+//                if (temp < min)
+//                {
+//                    min = temp;
+//                }
+                beta = Math.min(beta, min);
+                if (beta <= alpha)
+                {
+                    break;
                 }
             }
-
             return min;
         }
     }
 
     /**
      * Determines whether a player has won on the current board
-     * @param board the character board
-     * @param currentPlayer the character of the current player (i.e. 'X' or 'O')
+     * @param position the character board
+     //* @param currentPlayer the character of the current player (i.e. 'X' or 'O')
      * @return +100 if maximizer wins, -100 if minimizer wins, 0 if its a tie or nothing
      */
     @Override
-    public int evaluateBoard(char[][] board, char currentPlayer, int depth)
+    public int evaluateBoard(BoardWithMove position, int depth)
     {
-        // Check row winner
+        char winner = position.board.boardStatus();
 
-        for (int row = 0; row < board.length; row++)
+        if (winner == 'X')
         {
-            if (currentPlayer == 'X')
-            {
-                if(board[row][0] == currentPlayer && board[row][1] == currentPlayer &&
-                        board[row][2] == currentPlayer)
-                {
-                    return +100 - depth;
-                }
-            }
-            else if (currentPlayer == 'O')
-            {
-                if(board[row][0] == currentPlayer && board[row][1] == currentPlayer &&
-                        board[row][2] == currentPlayer)
-                {
-                    return depth - 100;
-                }
-            }
+            return 100 - depth;
+        }
+        else if (winner == 'O')
+        {
+            return depth - 100;
+        }
+        else
+        {
+            return 0;
         }
 
-        // Check column winner
-
-        for (int col = 0; col < board.length; col++)
-        {
-            if (currentPlayer == 'X')
-            {
-                if(board[0][col] == currentPlayer && board[1][col] == currentPlayer &&
-                        board[2][col] == currentPlayer)
-                {
-                    return +100 - depth;
-                }
-            }
-            else if (currentPlayer == 'O')
-            {
-                if(board[0][col] == currentPlayer && board[1][col] == currentPlayer &&
-                        board[2][col] == currentPlayer)
-                {
-                    return depth - 100;
-                }
-            }
-        }
-
-        // Check \ diagonal winner
-
-        if (currentPlayer == 'X')
-        {
-            if(board[0][0] == currentPlayer && board[1][1] == currentPlayer &&
-                    board[2][2] == currentPlayer)
-            {
-                return +100 - depth;
-            }
-        }
-        else if (currentPlayer == 'O')
-        {
-            if(board[0][0] == currentPlayer && board[1][1] == currentPlayer &&
-                    board[2][2] == currentPlayer)
-            {
-                return depth - 100;
-            }
-        }
-
-        // Check / diagonal winner
-
-        if (currentPlayer == 'X')
-        {
-            if(board[0][2] == currentPlayer && board[1][1] == currentPlayer &&
-                    board[2][0] == currentPlayer)
-            {
-                return +100 - depth;
-            }
-        }
-        else if (currentPlayer == 'O')
-        {
-            if(board[0][2] == currentPlayer && board[1][1] == currentPlayer &&
-                    board[2][0] == currentPlayer)
-            {
-                return depth - 100;
-            }
-        }
-
-        // If none of the above cases occur, then it's a tie, so return a score of 0
-
-        return 0;
+//        // Check row winner
+//
+//        for (int row = 0; row < board.length; row++)
+//        {
+//            if (currentPlayer == 'X')
+//            {
+//                if(board[row][0] == currentPlayer && board[row][1] == currentPlayer &&
+//                        board[row][2] == currentPlayer)
+//                {
+//                    return +100 - depth;
+//                }
+//            }
+//            else if (currentPlayer == 'O')
+//            {
+//                if(board[row][0] == currentPlayer && board[row][1] == currentPlayer &&
+//                        board[row][2] == currentPlayer)
+//                {
+//                    return depth - 100;
+//                }
+//            }
+//        }
+//
+//        // Check column winner
+//
+//        for (int col = 0; col < board.length; col++)
+//        {
+//            if (currentPlayer == 'X')
+//            {
+//                if(board[0][col] == currentPlayer && board[1][col] == currentPlayer &&
+//                        board[2][col] == currentPlayer)
+//                {
+//                    return +100 - depth;
+//                }
+//            }
+//            else if (currentPlayer == 'O')
+//            {
+//                if(board[0][col] == currentPlayer && board[1][col] == currentPlayer &&
+//                        board[2][col] == currentPlayer)
+//                {
+//                    return depth - 100;
+//                }
+//            }
+//        }
+//
+//        // Check \ diagonal winner
+//
+//        if (currentPlayer == 'X')
+//        {
+//            if(board[0][0] == currentPlayer && board[1][1] == currentPlayer &&
+//                    board[2][2] == currentPlayer)
+//            {
+//                return +100 - depth;
+//            }
+//        }
+//        else if (currentPlayer == 'O')
+//        {
+//            if(board[0][0] == currentPlayer && board[1][1] == currentPlayer &&
+//                    board[2][2] == currentPlayer)
+//            {
+//                return depth - 100;
+//            }
+//        }
+//
+//        // Check / diagonal winner
+//
+//        if (currentPlayer == 'X')
+//        {
+//            if(board[0][2] == currentPlayer && board[1][1] == currentPlayer &&
+//                    board[2][0] == currentPlayer)
+//            {
+//                return +100 - depth;
+//            }
+//        }
+//        else if (currentPlayer == 'O')
+//        {
+//            if(board[0][2] == currentPlayer && board[1][1] == currentPlayer &&
+//                    board[2][0] == currentPlayer)
+//            {
+//                return depth - 100;
+//            }
+//        }
+//
+//        // If none of the above cases occur, then it's a tie, so return a score of 0
+//
+//        return 0;
     }
 
     /**
