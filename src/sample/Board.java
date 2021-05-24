@@ -132,39 +132,6 @@ public class Board implements Cloneable {
 
     }
 
-    public void unsetMove(String buttonClicked)
-    {
-        if(buttonClicked.equalsIgnoreCase("button_topLeft"))
-            board[0][0] = '-';
-
-        if(buttonClicked.equalsIgnoreCase("button_topMid"))
-            board[0][1] = '-';
-
-        if(buttonClicked.equalsIgnoreCase("button_topRight"))
-            board[0][2] = '-';
-
-        if(buttonClicked.equalsIgnoreCase("button_midLeft"))
-            board[1][0] = '-';
-
-        if(buttonClicked.equalsIgnoreCase("button_midMid"))
-            board[1][1] = '-';
-
-        if(buttonClicked.equalsIgnoreCase("button_midRight"))
-            board[1][2] = '-';
-
-        if(buttonClicked.equalsIgnoreCase("button_botLeft"))
-            board[2][0] = '-';
-
-        if(buttonClicked.equalsIgnoreCase("button_botMid"))
-            board[2][1] = '-';
-
-        if(buttonClicked.equalsIgnoreCase("button_botRight"))
-            board[2][2] = '-';
-
-    }
-
-
-
     public void resetBoard()
     {
         for(int i = 0; i < boardSize; i++)
