@@ -23,8 +23,6 @@ import java.util.Optional;
 
 public class ControllerLan implements Runnable{
 
-    Board board = new Board(3, 3);
-
     private char thisPlayer;
     private static char currentPlayer;
 
@@ -135,21 +133,34 @@ public class ControllerLan implements Runnable{
 
         if(!msg.isContinueGame())
         {
-            Main.displayQuestionAlert("Shoot!", "The other player quit the game.");
+            boolean result = Main.displayQuestionAlert("Shoot!", "The other player quit the game. Make a new game?");
+            if(result == true)
+            {
+                //wait for a new player
+                thisPlayer = 'X';
+                resetBoard();
+            }
+            else
+            {
+                // do nothing
+                disableAllButtons();
+            }
         }
-
-        System.out.println(id);
-        System.out.println(currentPlayer + " just played a turn.");
-
-        // play a turn
-        play(currentPlayer, id);
-
-        if(msg.checkWinner() == '-')
-            listenForNextMove();
-        else if(msg.checkWinner() == thisPlayer)
-            showWinnerThisPlayer();
         else
-            showWinnerOtherPlayer();
+        {
+            System.out.println(id);
+            System.out.println(currentPlayer + " just played a turn.");
+
+            // play a turn
+            play(currentPlayer, id);
+
+            if(msg.checkWinner() == '-')
+                listenForNextMove();
+            else if(msg.checkWinner() == thisPlayer)
+                showWinnerThisPlayer();
+            else
+                showWinnerOtherPlayer();
+        }
 
     }
 
@@ -250,31 +261,7 @@ public class ControllerLan implements Runnable{
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
-            for(Node slot: gridPane.getChildren())
-            {
-                slot.setStyle("-fx-background-color: none;");
-                slot.setMouseTransparent(false);
-            }
-
-            currentPlayer = 'X';
-
-            count = 0;
-
-            // reset "winner!" and small viking head image back to being transparent
-            label_winner1.setText("");
-            label_winner2.setText("");
-            imageView_1.setVisible(false);
-            imageView_2.setVisible(false);
-
-            // reset the internal board to all '-' (empty)
-            board.resetBoard();
-
-            // reset current player image icon
-            switchPlayerIconImages();
-
-            winStatus = false;
-
-            initializeAfterLoad();
+            resetBoard();
             // ... user chose OK
         } else {
             // ... user chose CANCEL or closed the dialog
@@ -283,6 +270,32 @@ public class ControllerLan implements Runnable{
 
 
     }
+
+    private void resetBoard() throws IOException, ClassNotFoundException {
+        for(Node slot: gridPane.getChildren())
+        {
+            slot.setStyle("-fx-background-color: none;");
+            slot.setMouseTransparent(false);
+        }
+
+        currentPlayer = 'X';
+
+        count = 0;
+
+        // reset "winner!" and small viking head image back to being transparent
+        label_winner1.setText("");
+        label_winner2.setText("");
+        imageView_1.setVisible(false);
+        imageView_2.setVisible(false);
+
+        // reset current player image icon
+        switchPlayerIconImages();
+
+        winStatus = false;
+
+        initializeAfterLoad();
+    }
+
 
 
     /**

@@ -44,7 +44,7 @@ public class Main extends Application {
         alert.showAndWait();
     }
 
-    public static void displayQuestionAlert(String title, String content)
+    public static boolean displayQuestionAlert(String title, String content)
     {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -54,7 +54,13 @@ public class Main extends Application {
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK){
-
+            return true;
+            //waitForPlayerToJoin
+        }
+        else
+        {
+            return false;
+            // leave alert dialogue
         }
     }
 

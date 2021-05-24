@@ -20,12 +20,24 @@ public class GameController implements Runnable{
 
     private Map<String, Board> gamesInProgress = new HashMap<>();
 
+    private ArrayList<AIController> listOfAI = new ArrayList<>();
+
     public GameController() throws IOException {
-        serverConnection = new ClientConnection("GameController","GetAllGames",
-                "NewGame", "JoinGame", "GameMove", "QuitGame");
+        serverConnection = new ClientConnection("GetAllGames",
+                "NewGame", "JoinGame", "GameMove", "QuitGame", "NewGameAI", "GetCurrentGames", "ResetAIGame");
 
         Thread gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    private AIController findAvailableAI()
+    {
+        for(AIController ai: listOfAI)
+        {
+            if(!ai.isPlaying())
+                return ai;
+        }
+        return null;
     }
 
     @Override
@@ -44,11 +56,13 @@ public class GameController implements Runnable{
                 }
                 else if(msg instanceof NewGameMessage)
                 {
-                    Board board = new Board(3,3, ((NewGameMessage) msg).getUserWhoStartedThisGame());
+                    Board board = new Board(3,3);
 
-                    openGames.put(board.getPlayer1(), board);
+                    board.setPlayer1(((NewGameMessage) msg).getUserWhoStartedThisGame());
 
-                    serverConnection.sendPacket(new Packet( packet.getFromID(), new NewGameResponseMessage(board.getPlayer1())));
+                    openGames.put(board.getBoardID(), board);
+
+                    serverConnection.sendPacket(new Packet(packet.getFromID(), new NewGameResponseMessage(board.getBoardID())));
                 }
                 else if(msg instanceof JoinGameMessage)
                 {
@@ -83,7 +97,7 @@ public class GameController implements Runnable{
                     board.setMove(((GameMoveMessage) msg).getGameMove(), ((GameMoveMessage) msg).getCurrentPlayer());
                     // check if anyone won
 
-                    serverConnection.sendPacket(new Packet(board.getPlayer1(), new GameMoveResponseMessage(board.boardStatus(), ((GameMoveMessage) msg).getGameMove(), ((GameMoveMessage) msg).getCurrentPlayer(), true)));
+                    serverConnection.sendPacket(new Packet(board.getBoardID(), new GameMoveResponseMessage(board.boardStatus(), ((GameMoveMessage) msg).getGameMove(), ((GameMoveMessage) msg).getCurrentPlayer(), true)));
 
 
                     // if not, send GameMoveMessage to the other client and send GameMoveResponseMessage to this client
@@ -94,15 +108,72 @@ public class GameController implements Runnable{
                     QuitGameMessage quitGameMessage = (QuitGameMessage) msg;
 
                     Board board = gamesInProgress.get(quitGameMessage.getGameID());
-                    serverConnection.sendPacket(new Packet("Unsubscribe", new UnsubscribeMessage(quitGameMessage.getGameID(), quitGameMessage.getPlayerWhoQuitID())));
-                    serverConnection.sendPacket( new Packet( quitGameMessage.getGameID(), new GameMoveResponseMessage('q', null, 'q', false)));
+
+                    if(board == null) {
+                        board = openGames.get(quitGameMessage.getGameID());
+
+                        if (board != null) {
+                            openGames.remove(board.getBoardID());
+                            serverConnection.sendPacket(new Packet("Unsubscribe", new UnsubscribeMessage(quitGameMessage.getGameID(), quitGameMessage.getPlayerWhoQuitID())));
+                            serverConnection.sendPacket(new Packet( quitGameMessage.getGameID(), new GameMoveResponseMessage('q', null, 'q', false)));
+                        }
+                    }
+                    else
+                    {
+                        board.removePlayer(((QuitGameMessage) msg).getPlayerWhoQuitID());
+
+                        openGames.put(board.getBoardID(), board);
+                        gamesInProgress.remove(board.getBoardID());
+
+                        serverConnection.sendPacket(new Packet("Unsubscribe", new UnsubscribeMessage(quitGameMessage.getGameID(), quitGameMessage.getPlayerWhoQuitID())));
+                        serverConnection.sendPacket(new Packet( quitGameMessage.getGameID(), new GameMoveResponseMessage('q', null, 'q', false)));
+                    }
+
+
+                }
+                else if(msg instanceof NewGameAIMessage)
+                {
+                    Board board = new Board(3,3);
+
+                    board.setPlayer1(((NewGameAIMessage) msg).getUserWhoStartedThisGame());
+
+                    openGames.put(board.getBoardID(), board);
+
+                    ((NewGameAIMessage) msg).setBoardID(board.getBoardID());
+
+
+                    AIController ai = findAvailableAI();
+
+                    if(ai == null)
+                    {
+                        ai = new AIController(board, ((NewGameAIMessage) msg).getRole());
+                        listOfAI.add(ai);
+                    }
+                    else
+                    {
+                        ai.reset(board, ((NewGameAIMessage) msg).getRole());
+                    }
+
+                    Thread AIthread = new Thread(ai);
+                    AIthread.start();
+
+                    serverConnection.sendPacket(new Packet("AI", msg));
+                    serverConnection.sendPacket(new Packet(packet.getFromID(), new NewGameResponseMessage(board.getBoardID())));
+                }
+                else if (msg instanceof ResetBoardMessage)
+                {
+                    // only for ai
+                    String boardID = ((ResetBoardMessage) msg).getBoardID();
+
+                    Board board = gamesInProgress.get(boardID);
+
+                    if(board == null)
+                        board = openGames.get(boardID);
+
 
                     board.resetBoard();
 
-                    board.removePlayer(((QuitGameMessage) msg).getPlayerWhoQuitID());
-
-                    openGames.put(board.getPlayer1(), board);
-                    gamesInProgress.remove(((QuitGameMessage) msg).getGameID());
+                    // ask the other player to reset?
                 }
 
             } catch (IOException e) {

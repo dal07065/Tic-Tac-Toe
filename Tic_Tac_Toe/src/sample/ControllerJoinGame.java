@@ -44,7 +44,7 @@ public class ControllerJoinGame {
         if(AppData.joinGame((String)listView_openGames.getSelectionModel().getSelectedItem()))
         {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("design/playLan.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("design/playMult.fxml"));
 
             Parent root = loader.load();
 

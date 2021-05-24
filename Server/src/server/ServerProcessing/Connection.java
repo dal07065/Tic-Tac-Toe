@@ -87,7 +87,7 @@ public class Connection implements Runnable{
 
         SubscribeMessage msg = (SubscribeMessage) packet.getMessage();
 
-        System.out.println("New Connection Accepted: " + socket.getInetAddress().getHostAddress() + " : " + fromID);
+        System.out.println("New Connection Accepted: " + socket.getInetAddress().getHostAddress() + " : " + msg.getChannels().get(0));
 
         for(String channel:msg.getChannels())
         {

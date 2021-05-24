@@ -24,19 +24,21 @@ public class Board {
 
     public String getBoardID(){return boardID;}
 
-    public Board(int i, int j, String userWhoStartedThisGame)
+    public Board(int i, int j)
     {
         board = new char[i][j];
 
         resetBoard();
 
         boardID = IDGenerator.getNewID(this);
-
-        player1 = userWhoStartedThisGame;
     }
 
     public String getPlayer1() {return player1;}
 
+    public void setPlayer1(String userWhoStartedThisGame) {
+        player1 = userWhoStartedThisGame;
+    }
+    public String getPlayer2() {return player2;}
     public void setPlayer2(String userID)
     {
         player2 = userID;

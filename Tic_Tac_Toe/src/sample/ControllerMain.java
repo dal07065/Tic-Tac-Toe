@@ -103,6 +103,8 @@ public class ControllerMain {
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
 
+        Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
         Stage newStage = new Stage();
         newStage.setTitle("Tic Tac Toe");
 
@@ -112,7 +114,7 @@ public class ControllerMain {
         newStage.show();
 
         ControllerProfile controller = loader.getController();
-        controller.initialize();
+        controller.initialize(currentStage);
 
     }
 
@@ -136,7 +138,7 @@ public class ControllerMain {
 
         AppData.startNewGame();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("design/playLan.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("design/playMult.fxml"));
 
         Parent root = loader.load();
 
@@ -176,10 +178,11 @@ public class ControllerMain {
     }
 
     @FXML
-    void switchOffline(ActionEvent actionEvent) throws IOException {
-        // open a scene with 1 player or 2 player button options
+    void switchAI(ActionEvent actionEvent) throws IOException {
 
-        Parent root = FXMLLoader.load(getClass().getResource("design/offline.fxml"));
+        // play a game against AI
+
+        Parent root = FXMLLoader.load(getClass().getResource("design/selectRole.fxml"));
         Scene scenePlay = new Scene(root);
         scenePlay.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
 

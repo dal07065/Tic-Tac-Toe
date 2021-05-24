@@ -35,13 +35,13 @@ public class ClientConnection implements Runnable{
 
     private String fromID;
 
-    public ClientConnection(String clientName, String ... channels) throws IOException {
+    public ClientConnection(String ... channels) throws IOException {
         this.socket = new Socket("localhost", 8000);
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         inputStream = new ObjectInputStream(socket.getInputStream());
 
-//        fromID = IDGenerator.getNewID(this);
-        fromID = clientName;
+        fromID = IDGenerator.getNewID(this);
+//        fromID = clientName;
         registerChannels(fromID, channels);
 
 //        Thread clientThread = new Thread(this);

@@ -14,7 +14,7 @@ public final class AppData {
     public static void connectToServer() throws IOException {
         if(connection == null)
         {
-            connection = new ClientConnection("client1", "everyone");
+            connection = new ClientConnection("everyone");
 
         }
     }
@@ -36,13 +36,23 @@ public final class AppData {
         }
     }
 
-    public static void createUser(String userID, String password, String firstName, String lastName)  {
+    public static boolean createUser(String userID, String password, String firstName, String lastName)  {
         connection.sendPacket(new Packet("NewUser", new NewUserMessage(userID, password, firstName, lastName)));
+        NewUserResponseMessage msg = (NewUserResponseMessage) (connection.getPacket("NewUserResponse")).getMessage();
+        if(msg.isSuccessful())
+            return true;
+        else
+            return false;
+
     }
 
-    public static void updateUser(String userID, String password, String firstName, String lastName)  {
-        connection.sendPacket(new Packet("UpdateUser", new UpdateUserMessage(userID, password, firstName, lastName)));
+    public static boolean updateUser(String userID, String password, String firstName, String lastName)  {
+        connection.sendPacket(new Packet("UpdateUser", new UpdateUserMessage(user.getUserID(), userID, password, firstName, lastName)));
+        UpdateUserResponseMessage msg = (UpdateUserResponseMessage) (connection.getPacket("UpdateUserResponse").getMessage());
+        if(!msg.isSuccessful())
+            return false;
         user.update(password, firstName, lastName);
+        return true;
     }
 
     public static Packet makeGameMove(char currentPlayer, String moveID)  {
@@ -61,6 +71,15 @@ public final class AppData {
         user.setCurrentGameID(((NewGameResponseMessage)packet.getMessage()).getGameID());
 
     }
+
+    public static void startNewGameAI(char AIrole)
+    {
+        connection.sendPacket(new Packet("NewGameAI", new NewGameAIMessage(user.getUserID(), AIrole)));
+        Packet packet = connection.getPacket("NewGameResponse");
+        connection.sendPacket(new Packet("SubscribeMessage", new SubscribeMessage(((NewGameResponseMessage)packet.getMessage()).getGameID())));
+        user.setCurrentGameID(((NewGameResponseMessage)packet.getMessage()).getGameID());
+    }
+
 
     public static void waitForPlayerToJoinGame()
     {
@@ -93,5 +112,14 @@ public final class AppData {
 
     public static void quitCurrentGame() {
         connection.sendPacket(new Packet("QuitGame", new QuitGameMessage(user.getGameID(), user.getUserID())));
+        user.setCurrentGameID("");
+    }
+
+    public static void deleteUser() {
+        connection.sendPacket(new Packet("DeleteUser", new DeleteUserMessage(user.getUserID())));
+    }
+
+    public static void resetCurrentAIGame() {
+        connection.sendPacket(new Packet("ResetAIGame", new ResetBoardMessage(user.getGameID())));
     }
 }

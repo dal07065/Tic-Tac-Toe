@@ -16,7 +16,8 @@ public class ServerProcessing implements Runnable {
     private ClientConnection serverConnection;
 
     public ServerProcessing() throws IOException, ClassNotFoundException {
-        serverConnection = new ClientConnection("ServerProcessing", "LogIn", "NewUser", "UpdateUser", "CloseSocket", "SubscribeMessage", "Unsubscribe");
+        serverConnection = new ClientConnection("LogIn", "NewUser", "UpdateUser", "CloseSocket",
+                "SubscribeMessage", "Unsubscribe", "DeleteUser");
     }
 
     @Override
@@ -64,16 +65,28 @@ public class ServerProcessing implements Runnable {
                 }
                 else if(msg instanceof UpdateUserMessage)
                 {
-                    Database.updateUser((UserInfoMessage) msg);
+                    boolean success = Database.updateUser((UpdateUserMessage) msg);
 
-                    System.out.println("Database user has been updated");
+                    if(success) {
+                        serverConnection.sendPacket(new Packet(packet.getFromID(), new UpdateUserResponseMessage(true)));
+                        System.out.println("Database user has been updated");
+                    }
+                    else
+                        serverConnection.sendPacket(new Packet(packet.getFromID(), new UpdateUserResponseMessage(false)));
 
-//                serverConnection.sendPacket(new Packet("UpdateUserResponse" + packet.getFromID(), false, msg));
+
+//                  serverConnection.sendPacket(new Packet("UpdateUserResponse" + packet.getFromID(), false, msg));
 
                 }
                 else if(msg instanceof NewUserMessage)
                 {
-                    Database.insertUser((NewUserMessage) msg);
+                    User user = Database.findUser(((NewUserMessage) msg).getUserID());
+                    if(user == null) {
+                        Database.insertUser((NewUserMessage) msg);
+                        serverConnection.sendPacket(new Packet(packet.getFromID(), new NewUserResponseMessage(true)));
+                    }
+                    else
+                        serverConnection.sendPacket(new Packet(packet.getFromID(), new NewUserResponseMessage(false)));
 
 //                serverConnection.sendPacket(new Packet("NewUserResponse" + packet.getFromID(), false, msg));
                     // no need to send back response to connection
@@ -90,7 +103,10 @@ public class ServerProcessing implements Runnable {
                         connectionChannel.get(0).addChannel(channel);
                     }
                 }
-
+                else if(msg instanceof DeleteUserMessage)
+                {
+                    Database.deleteUser(((DeleteUserMessage) msg).getUserID());
+                }
                 else if(packet.getChannel().equals("CloseSocket"))
                 {
 
