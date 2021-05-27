@@ -3,20 +3,20 @@ package message;
 import java.io.Serializable;
 
 public class Packet implements Serializable {
-    private String type;
+
     private Message message;
     private String fromID;
-    private boolean needsResponse;
+    private String channel;
 
-    public Packet(String type, boolean needsResponse, Message message)
+    /**
+     *
+     * @param channel where is this packet going to?
+     * @param message the message itself?
+     */
+    public Packet(String channel, Message message)
     {
-        this.type = type;
         this.message = message;
-        this.needsResponse = needsResponse;
-    }
-
-    public String getType() {
-        return type;
+        this.channel = channel;
     }
 
     public Message getMessage() {
@@ -30,6 +30,6 @@ public class Packet implements Serializable {
 
     public String getFromID() {return fromID;}
 
-    public boolean getNeedsResponse() {return needsResponse;}
-    public void setNeedsResponse(boolean response) {needsResponse = response;}
+    public String getChannel() { return channel;}
+
 }
