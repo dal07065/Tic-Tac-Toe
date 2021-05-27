@@ -38,8 +38,8 @@ public final class AppData {
         connection.sendPacket(new Packet("NewUser", false, new NewUserMessage(userID, password, firstName, lastName, wins, loses, ties)));
     }
 
-    public static void updateUser(String userID, String password, String firstName, String lastName) throws IOException, ClassNotFoundException {
-        connection.sendPacket(new Packet("UpdateUser", false, new UpdateUserMessage(userID, password, firstName, lastName)));
+    public static void updateUser(String userID, String password, String firstName, String lastName, int wins, int loses, int ties) throws IOException, ClassNotFoundException {
+        connection.sendPacket(new Packet("UpdateUser", false, new UpdateUserMessage(userID, password, firstName, lastName, wins, loses, ties)));
         user.update(password, firstName, lastName);
     }
 

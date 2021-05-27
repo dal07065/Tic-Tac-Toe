@@ -37,7 +37,7 @@ public class User {
 
     public void set(Packet userInfoPacket) {
         UserInfoMessage userInfo = (UserInfoMessage) userInfoPacket.getMessage();
-        set(userInfo.getUserID(), userInfo.getPassword(), userInfo.getFirstName(), userInfo.getLastName(), userInfo.getWins());
+        set(userInfo.getUserID(), userInfo.getPassword(), userInfo.getFirstName(), userInfo.getLastName(), userInfo.getWins(), userInfo.getLoses(), userInfo.getTies());
     }
 
     public void set(String userID, String password, String firstName, String lastName, int wins, int loses, int ties) {
