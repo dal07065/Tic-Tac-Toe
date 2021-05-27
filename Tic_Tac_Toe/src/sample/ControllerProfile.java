@@ -65,7 +65,7 @@ public class ControllerProfile {
         int loses = AppData.user.getLoses();
         int ties = AppData.user.getTies();
 
-
+        // Update user
         AppData.updateUser(userID, password, firstName, lastName, wins, loses, ties);
 
         // Notify the user that it has been successfully updated
