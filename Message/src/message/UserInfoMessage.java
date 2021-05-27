@@ -6,13 +6,19 @@ public class UserInfoMessage extends Message{
     private String password;
     private String firstName;
     private String lastName;
+    private int wins;
+    private int loses;
+    private int ties;
 
-    public UserInfoMessage(String userID, String password, String firstName, String lastName)
+    public UserInfoMessage(String userID, String password, String firstName, String lastName, int wins, int loses, int ties)
     {
         this.userID = userID;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.wins = wins;
+        this.loses = loses;
+        this.ties = ties;
     }
 
     public String getUserID() {
@@ -46,4 +52,17 @@ public class UserInfoMessage extends Message{
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    public int getWins() { return wins; }
+
+    public void setWins(int wins) { this.wins = wins; }
+
+    public int getLoses() { return loses; }
+
+    public void setLoses(int loses) { this.loses = loses; }
+
+    public int getTies() { return ties; }
+
+    public void setTies(int ties) { this.ties = ties; }
+
 }
