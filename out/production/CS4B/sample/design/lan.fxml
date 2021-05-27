@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" spacing="30.0" stylesheets="@Main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ControllerMain">
+    <children>
+      <Label text="enter code:" />
+      <HBox alignment="CENTER" spacing="20.0">
+         <children>
+            <TextField fx:id="textField_code" prefWidth="100.0" />
+              <Button fx:id="button_CodeEntered" mnemonicParsing="false" onAction="#enterCode" text="enter" />
+         </children>
+      </HBox>
+    </children>
+    <padding>
+        <Insets bottom="100.0" left="100.0" right="100.0" top="100.0" />
+    </padding>
+</VBox>

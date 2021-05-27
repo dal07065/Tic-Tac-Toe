@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" spacing="10.0" stylesheets="@Main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ControllerOffline">
+   <children>
+      <Button fx:id="button_1player" mnemonicParsing="false" onAction="#switchSelectRole" text="1 player" />
+      <Button fx:id="button_2player" mnemonicParsing="false" onAction="#switchSelectRole" text="2 player" />
+   </children>
+   <padding>
+      <Insets bottom="100.0" left="100.0" right="100.0" top="100.0" />
+   </padding>
+</VBox>
