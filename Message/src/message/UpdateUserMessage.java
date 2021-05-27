@@ -1,7 +1,13 @@
 package message;
 
 public class UpdateUserMessage extends UserInfoMessage{
-    public UpdateUserMessage(String userID, String password, String firstName, String lastName, int wins, int loses, int ties) {
-        super(userID, password, firstName, lastName, wins, loses, ties);
+    private String originalUserID;
+    public UpdateUserMessage(String id, String userID, String password, String firstName, String lastName) {
+        super(userID, password, firstName, lastName);
+        this.originalUserID = id;
+    }
+    public String getOriginalUserID()
+    {
+        return originalUserID;
     }
 }
