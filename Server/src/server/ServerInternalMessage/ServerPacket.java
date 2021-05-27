@@ -12,7 +12,7 @@ public class ServerPacket extends Packet implements Serializable {
 
     public ServerPacket(Packet packet, Connection connection)
     {
-        super(packet.getType(), false, packet.getMessage());
+        super(packet.getChannel(), packet.getMessage());
         this.connection = connection;
     }
 

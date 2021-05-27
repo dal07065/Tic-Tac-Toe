@@ -2,6 +2,7 @@ package server.ServerProcessing;
 
 import message.Packet;
 import server.Database;
+import server.GameProcessing.GameController;
 import server.ServerInternalMessage.ServerPacket;
 
 import java.io.IOException;
@@ -26,11 +27,12 @@ public final class Server {
 
     public static ServerSocket server;
 
+    public static GameController gameController;
+
 
     public Server() throws IOException, ClassNotFoundException {
 
         server = new ServerSocket(8000);
-
 
         Thread messageProcessingThread = new Thread(new MessageProcessing());
         messageProcessingThread.start();
@@ -40,6 +42,8 @@ public final class Server {
 
         Thread serverProcessingThread = new Thread(new ServerProcessing());
         serverProcessingThread.start();
+
+        GameController gameController = new GameController();
 
     }
 

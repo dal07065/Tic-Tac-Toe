@@ -46,7 +46,7 @@ public class ControllerMain {
 
         if(!AppData.login(userID,password))
         {
-            displayAlert("Wrong Log In Information", "Please Try Again");
+            Main.displayAlert("Wrong Log In Information", "Please Try Again");
 
             textField_userID.clear();
             passwordField_password.clear();
@@ -103,6 +103,8 @@ public class ControllerMain {
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
 
+        Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
         Stage newStage = new Stage();
         newStage.setTitle("Tic Tac Toe");
 
@@ -112,15 +114,15 @@ public class ControllerMain {
         newStage.show();
 
         ControllerProfile controller = loader.getController();
-        controller.initialize();
+        controller.initialize(currentStage);
 
     }
 
     @FXML
-    void switchLan(ActionEvent actionEvent) throws IOException {
+    void multiplayer(ActionEvent actionEvent) throws IOException {
         // open a scene for "Enter code: "
 
-        Parent root = FXMLLoader.load(getClass().getResource("design/lan.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("design/multiplayerChoose.fxml"));
         Scene scenePlay = new Scene(root);
         scenePlay.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
 
@@ -132,10 +134,55 @@ public class ControllerMain {
     }
 
     @FXML
-    void switchOffline(ActionEvent actionEvent) throws IOException {
-        // open a scene with 1 player or 2 player button options
+    void startNewGame(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
 
-        Parent root = FXMLLoader.load(getClass().getResource("design/offline.fxml"));
+        AppData.startNewGame();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("design/playMult.fxml"));
+
+        Parent root = loader.load();
+
+        Scene scenePlay = new Scene(root, 634, 446);
+        scenePlay.getStylesheets().add(Main.class.getResource("design/Play.css").toExternalForm());
+
+        Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+        ControllerLan controller = loader.getController();
+
+        currentStage.setScene(scenePlay);
+        currentStage.sizeToScene();
+        currentStage.show();
+
+        controller.setThisPlayer('X');
+        controller.setCurrentPlayer('X');
+
+        controller.initializeAfterLoad();
+    }
+
+    @FXML
+    void joinGame(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("design/gameServer.fxml"));
+
+        Parent root = loader.load();
+
+        Scene scenePlay = new Scene(root, 634, 446);
+        scenePlay.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
+
+        Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+        currentStage.setScene(scenePlay);
+        currentStage.sizeToScene();
+        currentStage.show();
+
+    }
+
+    @FXML
+    void switchAI(ActionEvent actionEvent) throws IOException {
+
+        // play a game against AI
+
+        Parent root = FXMLLoader.load(getClass().getResource("design/selectRole.fxml"));
         Scene scenePlay = new Scene(root);
         scenePlay.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
 
@@ -172,13 +219,13 @@ public class ControllerMain {
         AppData.connectToServer();
     }
 
-
+/*
     public void enterCode(ActionEvent event) {
 
         try
         {
             // Create a socket to connect to the server
-            int password = Integer.parseInt(textField_code.getText());
+            String userID = Integer.parseInt(textField_code.getText());
 
             ConnectGameResponseMessage msg = (ConnectGameResponseMessage) (AppData.connectToGame(password)).getMessage();
 
@@ -226,13 +273,7 @@ public class ControllerMain {
             ex.printStackTrace();
         }
     }
-    public void displayAlert(String Title, String Content)
-    {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(Title);
-        alert.setHeaderText(null);
-        alert.setContentText(Content);
-        alert.showAndWait();
-    }
+    */
+
 
 }
