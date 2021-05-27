@@ -4,11 +4,13 @@ public class GameMoveMessage extends Message{
 
     private char currentPlayer;
     private String gameMove;
+    private String gameID;
 
-    public GameMoveMessage(String gameMove, char currentPlayer)
-    {
+
+    public GameMoveMessage(String moveID, String gameID, char currentPlayer) {
         this.currentPlayer = currentPlayer;
-        this.gameMove = gameMove;
+        this.gameMove = moveID;
+        this.gameID = gameID;
     }
 
     public char getCurrentPlayer() {
@@ -18,4 +20,6 @@ public class GameMoveMessage extends Message{
     public String getGameMove() {
         return gameMove;
     }
+
+    public String getGameID(){return gameID;}
 }

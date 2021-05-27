@@ -23,8 +23,6 @@ import java.util.Optional;
 
 public class ControllerLan implements Runnable{
 
-    Board board = new Board(3, 3);
-
     private char thisPlayer;
     private static char currentPlayer;
 
@@ -87,7 +85,13 @@ public class ControllerLan implements Runnable{
             label_player1.setText("x");
             label_player2.setText("o");
 
+            System.out.println("Waiting for other player to join...");
+
+            AppData.waitForPlayerToJoinGame();
+
             // Player X goes first
+            System.out.println("Make the move!");
+            playerTurn = true;
         }
         else
         {
@@ -97,6 +101,9 @@ public class ControllerLan implements Runnable{
             // Player O goes second
             // - wait for player X ( all button.setMouseTransparent(false) )
 
+
+            System.out.println("Waiting for next move...");
+            playerTurn = false;
             listenForNextMove();
 
         }
@@ -122,28 +129,45 @@ public class ControllerLan implements Runnable{
 
         String id = ((Button)(event.getSource())).getId();
 
-        GameResultMessage msg = (GameResultMessage) ((AppData.makeGameMove(currentPlayer, id)).getMessage());
+        GameMoveResponseMessage msg = (GameMoveResponseMessage) ((AppData.makeGameMove(currentPlayer, id)).getMessage());
 
-        System.out.println(id);
-        System.out.println(currentPlayer + " just played a turn.");
-
-        // play a turn
-        play(currentPlayer, id);
-
-        if(msg.checkWinner() == '-')
-            listenForNextMove();
-        else if(msg.checkWinner() == thisPlayer)
-            showWinnerThisPlayer();
+        if(!msg.isContinueGame())
+        {
+            boolean result = Main.displayQuestionAlert("Shoot!", "The other player quit the game. Make a new game?");
+            if(result == true)
+            {
+                //wait for a new player
+                thisPlayer = 'X';
+                resetBoard();
+            }
+            else
+            {
+                // do nothing
+                disableAllButtons();
+            }
+        }
         else
-            showWinnerOtherPlayer();
+        {
+            System.out.println(id);
+            System.out.println(currentPlayer + " just played a turn.");
+
+            // play a turn
+            play(currentPlayer, id);
+
+            if(msg.checkWinner() == '-')
+                listenForNextMove();
+            else if(msg.checkWinner() == thisPlayer)
+                showWinnerThisPlayer();
+            else
+                showWinnerOtherPlayer();
+        }
 
     }
 
     private void listenForNextMove() throws IOException, ClassNotFoundException {
 
 //        disableAllButtons();
-
-        GameResultMessage msg = (GameResultMessage) ((AppData.waitForGameMove(currentPlayer)).getMessage());
+        GameMoveResponseMessage msg = (GameMoveResponseMessage) ((AppData.waitForGameMove()).getMessage());
 
         System.out.println(currentPlayer + " just played a turn.");
         play(currentPlayer, msg.getGameMove());
@@ -237,31 +261,7 @@ public class ControllerLan implements Runnable{
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
-            for(Node slot: gridPane.getChildren())
-            {
-                slot.setStyle("-fx-background-color: none;");
-                slot.setMouseTransparent(false);
-            }
-
-            currentPlayer = 'X';
-
-            count = 0;
-
-            // reset "winner!" and small viking head image back to being transparent
-            label_winner1.setText("");
-            label_winner2.setText("");
-            imageView_1.setVisible(false);
-            imageView_2.setVisible(false);
-
-            // reset the internal board to all '-' (empty)
-            board.resetBoard();
-
-            // reset current player image icon
-            switchPlayerIconImages();
-
-            winStatus = false;
-
-            initializeAfterLoad();
+            resetBoard();
             // ... user chose OK
         } else {
             // ... user chose CANCEL or closed the dialog
@@ -270,6 +270,32 @@ public class ControllerLan implements Runnable{
 
 
     }
+
+    private void resetBoard() throws IOException, ClassNotFoundException {
+        for(Node slot: gridPane.getChildren())
+        {
+            slot.setStyle("-fx-background-color: none;");
+            slot.setMouseTransparent(false);
+        }
+
+        currentPlayer = 'X';
+
+        count = 0;
+
+        // reset "winner!" and small viking head image back to being transparent
+        label_winner1.setText("");
+        label_winner2.setText("");
+        imageView_1.setVisible(false);
+        imageView_2.setVisible(false);
+
+        // reset current player image icon
+        switchPlayerIconImages();
+
+        winStatus = false;
+
+        initializeAfterLoad();
+    }
+
 
 
     /**
@@ -292,6 +318,8 @@ public class ControllerLan implements Runnable{
     public void buttonBackClicked(ActionEvent actionEvent) throws IOException {
 
         // show a popup that says are you sure you would like to go back to main menu and discontinue this game?
+
+        AppData.quitCurrentGame();
 
         Parent root = FXMLLoader.load(getClass().getResource("design/main.fxml"));
 
