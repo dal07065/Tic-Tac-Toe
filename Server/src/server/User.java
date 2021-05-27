@@ -11,24 +11,17 @@ public class User {
     private String firstName;
     private String lastName;
 
-    private int wins;
-    private int loses;
-    private int ties;
-
     private Socket socket;
 
     public User() {
 
     }
 
-    public User(String userID, String password, String firstName, String lastName, int wins, int loses, int ties) {
+    public User(String userID, String password, String firstName, String lastName) {
         this.userID = userID;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.wins = wins;
-        this.loses = loses;
-        this.ties = ties;
     }
 
     public User(UserInfoMessage userInfo) {
@@ -39,10 +32,10 @@ public class User {
     }
 
     public void set(UserInfoMessage userInfo) {
-        set(userInfo.getUserID(), userInfo.getPassword(), userInfo.getFirstName(), userInfo.getLastName(), userInfo.getWins(), userInfo.getLoses(), userInfo.getTies());
+        set(userInfo.getUserID(), userInfo.getPassword(), userInfo.getFirstName(), userInfo.getLastName());
     }
 
-    public void set(String userID, String password, String firstName, String lastName, int wins, int loses, int ties) {
+    public void set(String userID, String password, String firstName, String lastName) {
         this.userID = userID;
         this.password = password;
         this.firstName = firstName;
@@ -72,12 +65,6 @@ public class User {
     public String getLastName() {
         return lastName;
     }
-
-    public int getWins() { return wins; }
-
-    public int getLoses() { return loses; }
-
-    public int getTies() { return ties; }
 
     public void setSocket(Socket socket)
     {

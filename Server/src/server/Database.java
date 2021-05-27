@@ -64,7 +64,7 @@ public final class Database {
 
         if(!result.isClosed())
         {
-            user = new User(result.getString(1),result.getString(2),result.getString(3),result.getString(4), result.getInt(5), result.getInt(6), result.getInt(7));
+            user = new User(result.getString(1),result.getString(2),result.getString(3),result.getString(4));
         }
 
         result.close();

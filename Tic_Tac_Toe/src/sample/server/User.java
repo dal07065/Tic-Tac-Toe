@@ -10,22 +10,19 @@ public class User {
     private String password;
     private String firstName;
     private String lastName;
-    private int wins;
-    private int loses;
-    private int ties;
+
+    private String currentGameID;
+    public void setCurrentGameID(String id) {currentGameID = id;}
 
     public User() {
 
     }
 
-    public User(String userID, String password, String firstName, String lastName, int wins, int loses, int ties) {
+    public User(String userID, String password, String firstName, String lastName) {
         this.userID = userID;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.wins = wins;
-        this.loses = loses;
-        this.ties = ties;
     }
 
     public User(Packet userInfo) {
@@ -37,17 +34,14 @@ public class User {
 
     public void set(Packet userInfoPacket) {
         UserInfoMessage userInfo = (UserInfoMessage) userInfoPacket.getMessage();
-        set(userInfo.getUserID(), userInfo.getPassword(), userInfo.getFirstName(), userInfo.getLastName(), userInfo.getWins(), userInfo.getLoses(), userInfo.getTies());
+        set(userInfo.getUserID(), userInfo.getPassword(), userInfo.getFirstName(), userInfo.getLastName());
     }
 
-    public void set(String userID, String password, String firstName, String lastName, int wins, int loses, int ties) {
+    public void set(String userID, String password, String firstName, String lastName) {
         this.userID = userID;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.wins = wins;
-        this.loses = loses;
-        this.ties = ties;
     }
 
     public void update(Packet userInfoPacket) {
@@ -85,10 +79,6 @@ public class User {
         return lastName;
     }
 
-    public int getWins() { return wins; }
-
-    public int getLoses() { return loses; }
-
-    public int getTies() { return ties; }
-
+    public String getGameID() { return currentGameID;
+    }
 }
