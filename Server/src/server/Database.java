@@ -32,7 +32,7 @@ public final class Database {
 
 
 
-        String sql = "INSERT INTO User(userID, password, firstName, lastName, deleted) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO User(userID, password, firstName, lastName, wins, loses, ties, deleted) VALUES(?,?,?,?,?,?,?,?)";
 
         try{
             PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -41,6 +41,9 @@ public final class Database {
             pstmt.setString(3, userInfo.getFirstName());
             pstmt.setString(4, userInfo.getLastName());
             pstmt.setInt(5, 0);
+            pstmt.setInt(6, 0);
+            pstmt.setInt(7, 0);
+            pstmt.setInt(8, 0);
             pstmt.executeUpdate();
             pstmt.close();
         } catch (SQLException e) {
@@ -64,7 +67,8 @@ public final class Database {
 
         if(!result.isClosed())
         {
-            user = new User(result.getString(1),result.getString(2),result.getString(3),result.getString(4));
+            user = new User(result.getString(1),result.getString(2),result.getString(3),result.getString(4),
+                    result.getInt(5), result.getInt(6), result.getInt(7));
         }
 
         result.close();

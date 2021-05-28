@@ -25,7 +25,12 @@ public class ControllerProfile {
     private Label label_lastName;
     @FXML
     private Button button_updateProfile;
-
+    @FXML
+    private Label label_wins;
+    @FXML
+    private Label label_loses;
+    @FXML
+    private Label label_ties;
     @FXML
     private TextField textField_userID;
     @FXML
@@ -49,6 +54,9 @@ public class ControllerProfile {
         label_firstName.setText(AppData.user.getFirstName().toLowerCase());
         label_lastName.setText(AppData.user.getLastName().toLowerCase());
         label_userID.setText(AppData.user.getUserID().toLowerCase());
+        label_wins.setText(Integer.toString(AppData.user.getWins()));
+        label_loses.setText(Integer.toString(AppData.user.getLoses()));
+        label_ties.setText(Integer.toString(AppData.user.getTies()));
 
         textField_userID.clear();
         textField_lastName.clear();

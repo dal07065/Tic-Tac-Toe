@@ -37,7 +37,7 @@ public final class AppData {
     }
 
     public static boolean createUser(String userID, String password, String firstName, String lastName)  {
-        connection.sendPacket(new Packet("NewUser", new NewUserMessage(userID, password, firstName, lastName)));
+        connection.sendPacket(new Packet("NewUser", new NewUserMessage(userID, password, firstName, lastName,0,0,0)));
         NewUserResponseMessage msg = (NewUserResponseMessage) (connection.getPacket("NewUserResponse")).getMessage();
         if(msg.isSuccessful())
             return true;

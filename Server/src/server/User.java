@@ -11,6 +11,10 @@ public class User {
     private String firstName;
     private String lastName;
 
+    private int wins;
+    private int loses;
+    private int ties;
+
     private Socket socket;
 
     public User() {
@@ -22,6 +26,18 @@ public class User {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+
+
+    public User(String userID, String password, String firstName, String lastName, int wins, int loses, int ties) {
+        this.userID = userID;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.wins = wins;
+        this.loses = loses;
+        this.ties = ties;
     }
 
     public User(UserInfoMessage userInfo) {
@@ -71,4 +87,15 @@ public class User {
         this.socket = socket;
     }
 
+    public int getWins() {
+        return wins;
+    }
+
+    public int getLoses() {
+        return loses;
+    }
+
+    public int getTies() {
+        return ties;
+    }
 }
