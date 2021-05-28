@@ -15,6 +15,10 @@ import java.io.IOException;
 public class ControllerGameServer {
 
     @FXML
+    private Button button_watchGame;
+    @FXML
+    private Button button_gameDetails;
+    @FXML
     private Button buttonBack;
 
     public void buttonBackClicked(ActionEvent event) throws IOException {
@@ -32,17 +36,35 @@ public class ControllerGameServer {
 
             Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
             currentStage.setTitle("Tic Tac Toe");
-
             currentStage.setScene(scene);
             currentStage.setResizable(false);
             currentStage.show();
-
         }
     }
 
-    public void switchScene(ActionEvent event) {
+    public void switchToGameDetails(ActionEvent event) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("design/gameServerUI.fxml"));
+
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
+
+        Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        currentStage.setTitle("Tic Tac Toe");
+
+        currentStage.setScene(scene);
+        currentStage.setResizable(false);
+        currentStage.show();
+
+
+    }
+
+    public void switchToWatchGame(ActionEvent event) {
 
 
 
     }
+
 }
