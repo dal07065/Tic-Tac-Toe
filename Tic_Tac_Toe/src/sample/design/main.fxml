@@ -16,7 +16,7 @@
                 <Insets bottom="30.0" />
             </padding>
         </Label>
-      <Button mnemonicParsing="false" text="watch game stream" />
+      <Button fx:id="button_gameStream" mnemonicParsing="false" onAction="#gameStream" text="watch game stream" />
         <Button fx:id="button_lan" mnemonicParsing="false" onAction="#multiplayer" text="multiplayer" />
         <Button fx:id="button_ai" mnemonicParsing="false" onAction="#switchAI" text="ai" />
       <Button fx:id="button_userProfile" mnemonicParsing="false" onAction="#loadProfile" text="user profile" />

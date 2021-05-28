@@ -51,7 +51,7 @@ public final class AppData {
         UpdateUserResponseMessage msg = (UpdateUserResponseMessage) (connection.getPacket("UpdateUserResponse").getMessage());
         if(!msg.isSuccessful())
             return false;
-        user.update(password, firstName, lastName);
+        user.update(userID, password, firstName, lastName);
         return true;
     }
 

@@ -57,6 +57,8 @@
         <Label fx:id="label_wins" text="WINS" GridPane.columnIndex="1" GridPane.rowIndex="3" />
         <Label fx:id="label_loses" text="LOSES" GridPane.columnIndex="1" GridPane.rowIndex="4" />
         <Label fx:id="label_ties" text="TIES" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      <TextField fx:id="textField_userID" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+      <Button fx:id="button_deleteUser" mnemonicParsing="false" onAction="#deleteUser" text="delete user" GridPane.columnIndex="2" GridPane.rowIndex="7" />
     </children>
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

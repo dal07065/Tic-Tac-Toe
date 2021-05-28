@@ -54,8 +54,10 @@ public class User {
             this.lastName = userInfo.getLastName();
 
     }
-    public void update(String password, String firstName, String lastName) {
+    public void update(String userID, String password, String firstName, String lastName) {
 
+        if (!userID.equals(""))
+            this.userID = userID;
         if (!password.equals(""))
             this.password = password;
         if (!firstName.equals(""))

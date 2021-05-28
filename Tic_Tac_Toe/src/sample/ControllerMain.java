@@ -72,6 +72,12 @@ public class ControllerMain {
     }
 
     @FXML
+    public void gameStream(ActionEvent actionEvent)
+    {
+        // AppData.gameStream()
+    }
+
+    @FXML
     public void createAccountMain(ActionEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("design/createAccount.fxml"));
 
@@ -218,62 +224,5 @@ public class ControllerMain {
 
         AppData.connectToServer();
     }
-
-/*
-    public void enterCode(ActionEvent event) {
-
-        try
-        {
-            // Create a socket to connect to the server
-            String userID = Integer.parseInt(textField_code.getText());
-
-            ConnectGameResponseMessage msg = (ConnectGameResponseMessage) (AppData.connectToGame(password)).getMessage();
-
-            if(msg.getStatus().equals("occupied"))
-            {
-                displayAlert("Occupied Game", "The game is currently occupied. Please try again later.");
-                textField_code.clear();
-            }
-            else
-            {
-
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("design/playLan.fxml"));
-
-                Parent root = loader.load();
-
-                Scene scenePlay = new Scene(root, 634, 446);
-                scenePlay.getStylesheets().add(Main.class.getResource("design/Play.css").toExternalForm());
-
-                Stage currentStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-
-                ControllerLan controller = loader.getController();
-
-                currentStage.setScene(scenePlay);
-                currentStage.sizeToScene();
-                currentStage.show();
-
-                // wait for another player
-
-                char currentPlayer = msg.getPlayer();
-
-                controller.setThisPlayer(currentPlayer);
-                controller.setCurrentPlayer('X');
-
-                controller.initializeAfterLoad();
-            }
-//            Socket socket = new Socket("192.168.1.68", Integer.parseInt(textField_code.getText()));
-//            Socket socket = new Socket("130.254.204.36", 8000);
-//            Socket socket = new Socket("drake.Armstrong.edu", 8000);
-//            Create an input stream to receive data from the server
-
-
-        }
-        catch (IOException | ClassNotFoundException ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-    */
-
 
 }
