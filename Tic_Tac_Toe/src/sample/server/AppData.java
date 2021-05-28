@@ -105,6 +105,19 @@ public final class AppData {
             return false;
     }
 
+    public static Message joinGameAsViewer(String gameID)
+    {
+        connection.sendPacket(new Packet("JoinGameAsViewer", new JoinGameAsViewerMessage(user.getUserID(), gameID)));
+        JoinGameAsViewerResponseMessage msg = (JoinGameAsViewerResponseMessage) connection.getPacket("JoinGameAsViewerResponse").getMessage();
+        if(msg.isSuccess())
+        {
+            user.setCurrentGameID(gameID);
+            connection.sendPacket(new Packet("SubscribeMessage", new SubscribeMessage(gameID)));
+
+        }
+        return msg;
+    }
+
     public static ArrayList<String> getAllGames() {
         connection.sendPacket(new Packet("GetAllGames", new GetAllGamesMessage()));
         return ((GetAllGamesResponseMessage) connection.getPacket("GetAllGamesResponse").getMessage()).getAllGames();
@@ -122,4 +135,5 @@ public final class AppData {
     public static void resetCurrentAIGame() {
         connection.sendPacket(new Packet("ResetAIGame", new ResetBoardMessage(user.getGameID())));
     }
+
 }

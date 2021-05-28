@@ -3,6 +3,7 @@ package sample.server;
 import message.Message;
 import message.Packet;
 import message.UserInfoMessage;
+import sample.ControllerWatch;
 
 public class User {
 
@@ -16,6 +17,10 @@ public class User {
 
     private String currentGameID;
     public void setCurrentGameID(String id) {currentGameID = id;}
+
+//    private ControllerWatch currentGameStream;
+//    public void setCurrentGameStream(ControllerWatch controllerWatch) {currentGameStream = controllerWatch;}
+//    public ControllerWatch getCurrentGameStream() {return currentGameStream;}
 
     public String getCurrentGameID() {
         return currentGameID;

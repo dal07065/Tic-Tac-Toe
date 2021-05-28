@@ -22,6 +22,8 @@ public class Board {
     private String player1;
     private String player2;
 
+    private char currentPlayer;
+
     public String getBoardID(){return boardID;}
 
     public Board(int i, int j)
@@ -31,10 +33,13 @@ public class Board {
         resetBoard();
 
         boardID = IDGenerator.getNewID(this);
+
+        currentPlayer = 'X';
     }
 
-    public String getPlayer1() {return player1;}
+    public char getCurrentPlayer() {return currentPlayer;}
 
+    public String getPlayer1() {return player1;}
     public void setPlayer1(String userWhoStartedThisGame) {
         player1 = userWhoStartedThisGame;
     }
@@ -158,6 +163,11 @@ public class Board {
         if(buttonClicked.equalsIgnoreCase("button_botRight"))
             board[2][2] = player;
 
+        if(player == 'X')
+            currentPlayer = 'O';
+        else
+            currentPlayer = 'X';
+
     }
 
     public void resetBoard()
@@ -170,6 +180,8 @@ public class Board {
             }
         }
         posLeft = 9;
+
+        currentPlayer = 'X';
 
     }
 

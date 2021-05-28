@@ -24,7 +24,8 @@ public class GameController implements Runnable{
 
     public GameController() throws IOException {
         serverConnection = new ClientConnection("GetAllGames",
-                "NewGame", "JoinGame", "GameMove", "QuitGame", "NewGameAI", "GetCurrentGames", "ResetAIGame");
+                "NewGame", "JoinGame", "GameMove", "QuitGame", "NewGameAI", "GetCurrentGames", "ResetAIGame",
+                "JoinGameAsViewer");
 
         Thread gameThread = new Thread(this);
         gameThread.start();
@@ -120,13 +121,19 @@ public class GameController implements Runnable{
                     }
                     else
                     {
-                        board.removePlayer(((QuitGameMessage) msg).getPlayerWhoQuitID());
-
-                        openGames.put(board.getBoardID(), board);
-                        gamesInProgress.remove(board.getBoardID());
-
                         serverConnection.sendPacket(new Packet("Unsubscribe", new UnsubscribeMessage(quitGameMessage.getGameID(), quitGameMessage.getPlayerWhoQuitID())));
-                        serverConnection.sendPacket(new Packet( quitGameMessage.getGameID(), new GameMoveResponseMessage('q', null, 'q', false)));
+
+                        if(quitGameMessage.getPlayerWhoQuitID().equals(board.getPlayer1()) || quitGameMessage.getPlayerWhoQuitID().equals(board.getPlayer2()))
+                        {
+                            board.removePlayer(((QuitGameMessage) msg).getPlayerWhoQuitID());
+
+                            openGames.put(board.getBoardID(), board);
+                            gamesInProgress.remove(board.getBoardID());
+                            serverConnection.sendPacket(new Packet( quitGameMessage.getGameID(), new GameMoveResponseMessage('q', null, 'q', false)));
+                        }
+
+
+
                     }
 
 
@@ -174,6 +181,21 @@ public class GameController implements Runnable{
                     board.resetBoard();
 
                     // ask the other player to reset?
+                }
+                else if(msg instanceof JoinGameAsViewerMessage)
+                {
+                    String gameID = ((JoinGameAsViewerMessage) msg).getGameID();
+
+                    Board game = gamesInProgress.get(gameID);
+
+                    if(game == null)
+                    {
+                        serverConnection.sendPacket(new Packet(packet.getFromID(), new JoinGameAsViewerResponseMessage(false, null, 'q', null, null)));
+                    }
+                    else
+                    {
+                        serverConnection.sendPacket(new Packet(gameID, new JoinGameAsViewerResponseMessage(true, gameID, game.getCurrentPlayer(), game.getPlayer1(), game.getPlayer2())));
+                    }
                 }
 
             } catch (IOException e) {

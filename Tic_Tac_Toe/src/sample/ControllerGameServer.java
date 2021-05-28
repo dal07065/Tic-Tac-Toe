@@ -9,6 +9,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import message.JoinGameAsViewerResponseMessage;
+import sample.server.AppData;
 
 import java.io.IOException;
 
@@ -62,6 +64,42 @@ public class ControllerGameServer {
     }
 
     public void switchToWatchGame(ActionEvent event) {
+
+
+
+    }
+
+    public void watchGame(ActionEvent actionEvent) throws IOException {
+        // get the selected object from the list of active games
+        JoinGameAsViewerResponseMessage msg = AppData.joinGameAsViewer((String)listView_openGames.getSelectionModel().getSelectedItem());
+
+        if(!msg.isSuccess())
+        {
+            Main.displayAlert("Failed", "Game: " + (String)listView_openGames.getSelectionModel().getSelectedItem() + " could not be accessed.");
+        }
+        else
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("design/playWatch.fxml"));
+
+            Parent root = loader.load();
+
+            Scene scenePlay = new Scene(root, 634, 446);
+            scenePlay.getStylesheets().add(Main.class.getResource("design/Play.css").toExternalForm());
+
+            Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+            ControllerWatch controller = loader.getController();
+
+            currentStage.setScene(scenePlay);
+            currentStage.sizeToScene();
+            currentStage.show();
+
+            controller.setThisPlayer('X');
+            controller.setCurrentPlayer(msg.getCurrentPlayer());
+
+            controller.initializeAfterLoad();
+
+        }
 
 
 

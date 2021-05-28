@@ -9,12 +9,17 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import sample.server.AppData;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
+        ArrayList<String> names = new ArrayList<>();
+
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("design/login.fxml"));
 

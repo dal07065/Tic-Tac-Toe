@@ -6,8 +6,6 @@ import message.*;
 import server.GameProcessing.AI.Minimax;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AIController implements Runnable{
     private ClientConnection connection;
