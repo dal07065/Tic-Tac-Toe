@@ -80,6 +80,7 @@ public class ControllerLan implements Runnable{
     private ImageView imageView_player2;
 
     public void initializeAfterLoad() throws IOException, ClassNotFoundException {
+        button_resetBoard.setVisible(false);
         if(thisPlayer == 'X')
         {
             label_player1.setText("x");
@@ -255,13 +256,17 @@ public class ControllerLan implements Runnable{
         // ask the other player to reset?
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
+        alert.setTitle("Reset Board");
         alert.setHeaderText("Look, a Confirmation Dialog");
-        alert.setContentText("Are you ok with this?");
+        alert.setContentText("Reset the board? This will wait until the other player confirms.");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
-            resetBoard();
+
+            if(AppData.resetCurrentGame())
+                resetBoard();
+            else
+                Main.displayAlert("Reset Board Failed", "Resetting board failed. Maybe the other player did not wish to play again.");
             // ... user chose OK
         } else {
             // ... user chose CANCEL or closed the dialog
@@ -293,7 +298,8 @@ public class ControllerLan implements Runnable{
 
         winStatus = false;
 
-        initializeAfterLoad();
+        if(currentPlayer != thisPlayer)
+            listenForNextMove();
     }
 
 
@@ -414,6 +420,8 @@ public class ControllerLan implements Runnable{
         disableAllButtons();
         winStatus = true;
         System.out.println("You won!");
+
+        button_resetBoard.setVisible(true);
     }
 
     //Program will show that player 2 has won the round
@@ -426,6 +434,8 @@ public class ControllerLan implements Runnable{
         disableAllButtons();
         winStatus = true;
         System.out.println("The other player won!");
+
+        button_resetBoard.setVisible(true);
     }
 
     public void setThisPlayer(char player) {

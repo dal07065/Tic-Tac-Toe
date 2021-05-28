@@ -8,11 +8,14 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 import message.JoinGameAsViewerResponseMessage;
 import sample.server.AppData;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ControllerGameServer {
 
@@ -22,6 +25,16 @@ public class ControllerGameServer {
     private Button button_gameDetails;
     @FXML
     private Button buttonBack;
+    @FXML
+    private ListView listView_activeGames;
+
+    public void initialize()
+    {
+        ArrayList<String> games = AppData.getAllActiveGames();
+
+        for(String game: games)
+            listView_activeGames.getItems().add(game);
+    }
 
     public void buttonBackClicked(ActionEvent event) throws IOException {
 
@@ -63,19 +76,13 @@ public class ControllerGameServer {
 
     }
 
-    public void switchToWatchGame(ActionEvent event) {
-
-
-
-    }
-
-    public void watchGame(ActionEvent actionEvent) throws IOException {
+    public void switchToWatchGame(ActionEvent actionEvent) throws IOException {
         // get the selected object from the list of active games
-        JoinGameAsViewerResponseMessage msg = AppData.joinGameAsViewer((String)listView_openGames.getSelectionModel().getSelectedItem());
+        JoinGameAsViewerResponseMessage msg = (JoinGameAsViewerResponseMessage) AppData.joinGameAsViewer((String)listView_activeGames.getSelectionModel().getSelectedItem());
 
         if(!msg.isSuccess())
         {
-            Main.displayAlert("Failed", "Game: " + (String)listView_openGames.getSelectionModel().getSelectedItem() + " could not be accessed.");
+            Main.displayAlert("Failed", "Game: " + (String)listView_activeGames.getSelectionModel().getSelectedItem() + " could not be accessed.");
         }
         else
         {
@@ -97,7 +104,7 @@ public class ControllerGameServer {
             controller.setThisPlayer('X');
             controller.setCurrentPlayer(msg.getCurrentPlayer());
 
-            controller.initializeAfterLoad();
+            controller.initializeAfterLoad(msg);
 
         }
 

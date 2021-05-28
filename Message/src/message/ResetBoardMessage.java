@@ -2,12 +2,16 @@ package message;
 
 public class ResetBoardMessage extends Message{
 
-    private String boardID;
+    private String userID;
+    private String gameID;
 
-    public ResetBoardMessage(String boardID)
+    public ResetBoardMessage(String gameID, String userID)
     {
-        this.boardID = boardID;
+        this.gameID = gameID;
+        this.userID = userID;
     }
 
-    public String getBoardID() {return boardID;}
+    public String getGameID() {return gameID;}
+
+    public String getUserID() {return userID;}
 }

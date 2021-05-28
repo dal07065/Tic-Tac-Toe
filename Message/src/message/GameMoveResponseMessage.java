@@ -25,4 +25,6 @@ public class GameMoveResponseMessage extends Message{
     }
 
     public boolean isContinueGame() {return continueGame;}
+
+    public char getPlayerThatMoved() {return playerThatMoved;}
 }

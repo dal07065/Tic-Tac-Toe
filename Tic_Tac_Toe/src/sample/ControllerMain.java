@@ -74,7 +74,7 @@ public class ControllerMain {
     @FXML
     public void gameStream(ActionEvent actionEvent) throws IOException {
 //        // AppData.gameStream()
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("design/gameStreamUI.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("design/gameStreamUI2.fxml"));
 
         Parent root = loader.load();
 
@@ -87,6 +87,10 @@ public class ControllerMain {
         currentStage.setScene(scene);
         currentStage.setResizable(false);
         currentStage.show();
+
+        ControllerGameServer controller = loader.getController();
+
+        controller.initialize();
 
 
     }

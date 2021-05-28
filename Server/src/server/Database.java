@@ -30,8 +30,6 @@ public final class Database {
 
     public static void insertUser(NewUserMessage userInfo) throws SQLException {
 
-
-
         String sql = "INSERT INTO User(userID, password, firstName, lastName, wins, loses, ties, deleted) VALUES(?,?,?,?,?,?,?,?)";
 
         try{

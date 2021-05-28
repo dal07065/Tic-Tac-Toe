@@ -55,12 +55,74 @@ public class ControllerWatch implements Runnable {
     private ImageView imageView_player1;
     @FXML
     private ImageView imageView_player2;
+    @FXML
+    private Label label_player1Name;
+    @FXML
+    private Label label_player2Name;
 
-    public void initializeAfterLoad() {
+    public void initializeAfterLoad(JoinGameAsViewerResponseMessage msg) {
 
         Thread updateGameStream = new Thread(this);
         updateGameStream.start();
         disableAllButtons();
+
+        char[][] board = msg.getBoard();
+        Button button;
+
+        for(int i = 0; i < board.length; i++)
+        {
+            for(int j = 0; j < board.length; j++)
+            {
+                button = findButton(findIDFromNumber(i,j));
+                if(board[i][j] == 'X')
+                {
+                    button.setStyle("-fx-background-image:url('/sample/resources/x_viking_small.png');");
+                }
+                else if(board[i][j] == 'O')
+                {
+                    button.setStyle("-fx-background-image:url('/sample/resources/O_viking_small.png');");
+                }
+            }
+        }
+
+        label_player1Name.setText(msg.getPlayer1());
+        label_player2Name.setText(msg.getPlayer2());
+
+    }
+
+    private String findIDFromNumber(int row, int col) {
+
+        if(row == 0)
+        {
+            if(col == 0)
+                return "button_topLeft";
+            else if(col == 1)
+                return "button_topMid";
+            else if(col == 2)
+                return "button_topRight";
+        }
+
+        if(row == 1)
+        {
+            if(col == 0)
+                return "button_midLeft";
+            else if(col == 1)
+                return "button_midMid";
+            else if(col == 2)
+                return "button_midRight";
+        }
+
+        if(row == 2)
+        {
+            if(col == 0)
+                return "button_botLeft";
+            else if(col == 1)
+                return "button_botMid";
+            else if(col == 2)
+                return "button_botRight";
+        }
+
+        return null;
     }
 
     void disableAllButtons()
@@ -69,28 +131,6 @@ public class ControllerWatch implements Runnable {
             slot.setMouseTransparent(true);
     }
 
-    private void resetBoard() throws IOException, ClassNotFoundException {
-        for(Node slot: gridPane.getChildren())
-        {
-            slot.setStyle("-fx-background-color: none;");
-            slot.setMouseTransparent(false);
-        }
-
-        currentPlayer = 'X';
-
-        winStatus = false;
-
-        // reset "winner!" and small viking head image back to being transparent
-        label_winner1.setText("");
-        label_winner2.setText("");
-        imageView_1.setVisible(false);
-        imageView_2.setVisible(false);
-
-        // reset current player image icon
-        switchPlayerIconImages();
-
-        initializeAfterLoad();
-    }
 
     /**
      * Goes back to Main scene when back button is pressed from Play scene
@@ -223,6 +263,26 @@ public class ControllerWatch implements Runnable {
 //        this.startingPlayer = startPlayer;
     }
 
+    private void resetBoard() throws IOException, ClassNotFoundException {
+        for(Node slot: gridPane.getChildren())
+        {
+            slot.setStyle("-fx-background-color: none;");
+            slot.setMouseTransparent(false);
+        }
+
+        currentPlayer = 'X';
+
+        // reset "winner!" and small viking head image back to being transparent
+        label_winner1.setText("");
+        label_winner2.setText("");
+        imageView_1.setVisible(false);
+        imageView_2.setVisible(false);
+
+        // reset current player image icon
+        switchPlayerIconImages();
+
+    }
+
     @Override
     public void run() {
 
@@ -230,38 +290,64 @@ public class ControllerWatch implements Runnable {
 
         while(gameContinue)
         {
-            GameMoveResponseMessage msg = (GameMoveResponseMessage) AppData.waitForGameMove().getMessage();
-
-            if(!msg.isContinueGame())
-            {
-                Main.displayAlert("Shoot!", "One of the players quit the game. Waiting for a player to join...");
+            Message msg = null;
+            try {
+                msg = AppData.connection.getPacket().getMessage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-            else
-            {
-                System.out.println(msg.getGameMove());
-                System.out.println(currentPlayer + " just played a turn.");
 
-                // play a turn
+            if(msg instanceof ResetBoardResponseMessage)
+            {
                 try {
-                    play(currentPlayer, msg.getGameMove());
+                    resetBoard();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-
-                if(msg.checkWinner() == thisPlayer)
-                    showWinnerThisPlayer();
+            }
+            else if(msg instanceof GameMoveResponseMessage)
+            {
+                if(!((GameMoveResponseMessage) msg).isContinueGame())
+                {
+                    Main.displayAlert("Shoot!", "One of the players quit the game. Waiting for a player to join...");
+                    gameContinue = false;
+                }
                 else
-                    showWinnerOtherPlayer();
+                {
+                    System.out.println(((GameMoveResponseMessage) msg).getGameMove());
+                    System.out.println(currentPlayer + " just played a turn.");
 
-                try {
-                    sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    // play a turn
+                    try {
+                        play(currentPlayer, ((GameMoveResponseMessage) msg).getGameMove());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(((GameMoveResponseMessage) msg).checkWinner() == '-');
+                    else if(((GameMoveResponseMessage) msg).checkWinner() == 'X')
+                        showWinnerThisPlayer();
+                    else if (((GameMoveResponseMessage) msg).checkWinner() == 'O')
+                        showWinnerOtherPlayer();
+
+                    try {
+                        sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+
         }
 
+    }
+
+    public void buttonClicked(ActionEvent actionEvent) {
     }
 }

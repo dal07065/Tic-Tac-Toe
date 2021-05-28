@@ -25,7 +25,7 @@ public class GameController implements Runnable{
     public GameController() throws IOException {
         serverConnection = new ClientConnection("GetAllGames",
                 "NewGame", "JoinGame", "GameMove", "QuitGame", "NewGameAI", "GetCurrentGames", "ResetAIGame",
-                "JoinGameAsViewer");
+                "JoinGameAsViewer", "GetAllActiveGames", "ResetGame");
 
         Thread gameThread = new Thread(this);
         gameThread.start();
@@ -169,16 +169,24 @@ public class GameController implements Runnable{
                 }
                 else if (msg instanceof ResetBoardMessage)
                 {
-                    // only for ai
-                    String boardID = ((ResetBoardMessage) msg).getBoardID();
+                    String boardID = ((ResetBoardMessage) msg).getGameID();
+                    String player = ((ResetBoardMessage) msg).getUserID();
 
                     Board board = gamesInProgress.get(boardID);
 
                     if(board == null)
-                        board = openGames.get(boardID);
+                       serverConnection.sendPacket(new Packet(packet.getFromID(), new ResetBoardResponseMessage(false)));
+                    else
+                    {
+                        board.setPlayerReady(player);
+
+                        if(board.playAgain()) {
+                            serverConnection.sendPacket(new Packet(boardID, new ResetBoardResponseMessage(true)));
+                            board.resetBoard();
+                        }
+                    }
 
 
-                    board.resetBoard();
 
                     // ask the other player to reset?
                 }
@@ -190,12 +198,21 @@ public class GameController implements Runnable{
 
                     if(game == null)
                     {
-                        serverConnection.sendPacket(new Packet(packet.getFromID(), new JoinGameAsViewerResponseMessage(false, null, 'q', null, null)));
+                        serverConnection.sendPacket(new Packet(packet.getFromID(), new JoinGameAsViewerResponseMessage(false, null, 'q', null, null, null)));
                     }
                     else
                     {
-                        serverConnection.sendPacket(new Packet(gameID, new JoinGameAsViewerResponseMessage(true, gameID, game.getCurrentPlayer(), game.getPlayer1(), game.getPlayer2())));
+                        serverConnection.sendPacket(new Packet(packet.getFromID(), new JoinGameAsViewerResponseMessage(true, gameID, game.getCurrentPlayer(), game.getPlayer1(), game.getPlayer2(),game.getBoard())));
+//                        serverConnection.sendPacket(new Packet(gameID, new JoinGameAsViewerResponseMessage(true, gameID, game.getCurrentPlayer(), game.getPlayer1(), game.getPlayer2(), game.getBoard())));
                     }
+                }
+                else if(msg instanceof GetAllActiveGamesMessage)
+                {
+
+                    Set<String> set = gamesInProgress.keySet();
+                    ArrayList<String> gamesList = new ArrayList<>(set);
+                    serverConnection.sendPacket(new Packet( packet.getFromID(), new GetAllActiveGamesResponseMessage(gamesList)));
+
                 }
 
             } catch (IOException e) {

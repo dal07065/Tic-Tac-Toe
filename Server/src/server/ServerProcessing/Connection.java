@@ -33,8 +33,6 @@ public class Connection implements Runnable{
         outputStream = new ObjectOutputStream(socket.getOutputStream());
         inputStream = new ObjectInputStream(socket.getInputStream());
 
-
-
         // Get a list of channels to subscribe to
 
         initializeChannels();

@@ -133,7 +133,18 @@ public final class AppData {
     }
 
     public static void resetCurrentAIGame() {
-        connection.sendPacket(new Packet("ResetAIGame", new ResetBoardMessage(user.getGameID())));
+        connection.sendPacket(new Packet("ResetAIGame", new ResetBoardMessage(user.getGameID(), user.getGameID())));
     }
 
+    public static ArrayList<String> getAllActiveGames() {
+        connection.sendPacket(new Packet("GetAllActiveGames", new GetAllActiveGamesMessage()));
+        return ((GetAllActiveGamesResponseMessage) connection.getPacket("GetAllGamesResponse").getMessage()).getAllGames();
+    }
+
+    public static boolean resetCurrentGame() {
+        connection.sendPacket(new Packet("ResetGame", new ResetBoardMessage(user.getGameID(), user.getUserID())));
+        ResetBoardResponseMessage msg = (ResetBoardResponseMessage) connection.getPacket("ResetBoardResponse").getMessage();
+        return msg.isSuccess();
+
+    }
 }

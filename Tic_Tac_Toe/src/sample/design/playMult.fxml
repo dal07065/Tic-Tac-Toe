@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="446.0" prefWidth="639.0" stylesheets="@Play.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ControllerAI">
+<AnchorPane prefHeight="446.0" prefWidth="639.0" stylesheets="@Play.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ControllerLan">
    <children>
       <HBox layoutX="57.0" layoutY="114.0" spacing="20.0">
          <children>
@@ -81,7 +81,7 @@
          </children>
       </HBox>
       <Button fx:id="buttonBack" layoutX="5.0" layoutY="402.0" mnemonicParsing="false" onAction="#buttonBackClicked" prefHeight="26.0" prefWidth="40.0" />
-      <Button fx:id="button_resetBoard" layoutX="271.0" layoutY="367.0" mnemonicParsing="false" onAction="#resetClicked" text="reset" />
+      <Button fx:id="button_resetBoard" layoutX="244.0" layoutY="368.0" mnemonicParsing="false" onAction="#resetClicked" text="play again" />
       <HBox alignment="TOP_CENTER" layoutX="174.0" layoutY="22.0" prefHeight="30.0" prefWidth="316.0" spacing="10.0">
          <children>
             <ImageView fx:id="imageView_player1" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">

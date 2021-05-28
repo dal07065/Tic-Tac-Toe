@@ -22,6 +22,9 @@ public class Board {
     private String player1;
     private String player2;
 
+    private boolean player1ready;
+    private boolean player2ready;
+
     private char currentPlayer;
 
     public String getBoardID(){return boardID;}
@@ -186,5 +189,20 @@ public class Board {
     }
 
 
+    public void setPlayerReady(String player) {
+        if(player.equals(player1))
+            player1ready = true;
+        else if(player.equals(player2))
+            player2ready = true;
+    }
 
+    public boolean playAgain() {
+        if(player1ready && player2ready)
+        {
+            player1ready = false;
+            player2ready = false;
+            return true;
+        }
+        return false;
+    }
 }
