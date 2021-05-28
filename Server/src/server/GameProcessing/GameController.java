@@ -2,6 +2,7 @@ package server.GameProcessing;
 
 import SharedServerComponents.ClientConnection;
 import message.*;
+import server.Database;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class GameController implements Runnable{
     public GameController() throws IOException {
         serverConnection = new ClientConnection("GetAllGames",
                 "NewGame", "JoinGame", "GameMove", "QuitGame", "NewGameAI", "GetCurrentGames", "ResetAIGame",
-                "JoinGameAsViewer", "GetAllActiveGames", "ResetGame");
+                "JoinGameAsViewer", "GetAllActiveGames", "ResetGame", "GetAllRegisteredPlayers");
 
         Thread gameThread = new Thread(this);
         gameThread.start();
@@ -213,6 +214,10 @@ public class GameController implements Runnable{
                     ArrayList<String> gamesList = new ArrayList<>(set);
                     serverConnection.sendPacket(new Packet( packet.getFromID(), new GetAllActiveGamesResponseMessage(gamesList)));
 
+                }
+                else if(msg instanceof GetRegisteredPlayersMessage)
+                {
+                    Database.getAllUsers();
                 }
 
             } catch (IOException e) {

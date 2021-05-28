@@ -129,4 +129,7 @@ public final class Database {
         preparedStatement.executeUpdate();
         preparedStatement.close();
     }
+
+    public static void getAllUsers() {
+    }
 }
