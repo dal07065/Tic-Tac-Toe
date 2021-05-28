@@ -72,9 +72,23 @@ public class ControllerMain {
     }
 
     @FXML
-    public void gameStream(ActionEvent actionEvent)
-    {
-        // AppData.gameStream()
+    public void gameStream(ActionEvent actionEvent) throws IOException {
+//        // AppData.gameStream()
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("design/gameStreamUI.fxml"));
+
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(Main.class.getResource("design/Main.css").toExternalForm());
+
+        Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        currentStage.setTitle("Tic Tac Toe");
+
+        currentStage.setScene(scene);
+        currentStage.setResizable(false);
+        currentStage.show();
+
+
     }
 
     @FXML
